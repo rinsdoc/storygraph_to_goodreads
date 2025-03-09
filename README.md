@@ -54,14 +54,14 @@ python compare_csv.py new_library.csv existing_library.csv new_file.csv
 
 #### **Usage**
 ```sh
-python split.py your_file.csv --chunk-size 50
+python split.py your_file.csv --chunk-size 50 file_part
 ```
-✅ This creates files like `split_file_1.csv`, `split_file_2.csv` with **50 rows each**.
+✅ This creates files like `file_part__1.csv`, `file_part__2.csv` with **50 rows each**.
 
 🔹 I you want the files to be larger or smaller you can change the number in the command to whatever you like.
 #### **Example**
 ```sh
-python split.py your_file.csv --chunk-size 100
+python split.py your_file.csv --chunk-size 100 file_part
 ```
 
 💡 **To split by reading status (Read, To-Read, etc.), use:**
