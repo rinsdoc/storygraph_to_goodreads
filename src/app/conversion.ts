@@ -1,11 +1,11 @@
 /**
- * Lógica de conversión portada de los scripts Python originales:
- * storygraph_to_goodreads.py, compare_csv.py, split.py y year_splitter.py.
+ * Conversion logic ported from the original Python scripts:
+ * storygraph_to_goodreads.py, compare_csv.py, split.py and year_splitter.py.
  */
 
 import { CsvData, Row } from './csv';
 
-/** Cabeceras exactas del formato de importación de Goodreads. */
+/** Exact headers of the Goodreads import format. */
 export const GOODREADS_HEADERS = [
   'Book Id',
   'Title',
@@ -42,7 +42,7 @@ function pad(n: number): string {
   return String(n).padStart(2, '0');
 }
 
-/** Convierte una fecha de StoryGraph al formato YYYY/MM/DD de Goodreads. */
+/** Converts a StoryGraph date to the Goodreads YYYY/MM/DD format. */
 export function convertDate(dateStr: string): string {
   const s = dateStr.trim();
   if (!s) {
@@ -156,12 +156,15 @@ function cleanIsbn(value: string): string {
   return value.trim().replaceAll('-', '').replaceAll('="', '').replaceAll('"', '');
 }
 
-/** Devuelve los libros de `newData` que no están en `existingData`. */
+/** Sentinel message so the UI can translate this known error. */
+export const TITLE_COLUMN_NOT_FOUND = 'TITLE_COLUMN_NOT_FOUND';
+
+/** Returns the books in `newData` that are not in `existingData`. */
 export function compareLibraries(newData: CsvData, existingData: CsvData): CsvData {
   const titleColExisting = findColumn(existingData.headers, TITLE_COLS);
   const titleColNew = findColumn(newData.headers, TITLE_COLS);
   if (!titleColExisting || !titleColNew) {
-    throw new Error('No se encontró la columna de título en uno de los archivos.');
+    throw new Error(TITLE_COLUMN_NOT_FOUND);
   }
   const authorColExisting = findColumn(existingData.headers, AUTHOR_COLS);
   const isbnColExisting = findColumn(existingData.headers, ISBN_COLS);
@@ -244,8 +247,8 @@ function extractYears(row: Row): Set<number> {
 }
 
 /**
- * Agrupa por año (Date Added, Dates Read o Last Date Read). Sin filtro,
- * un libro puede aparecer en varios años; con `year`, solo en ese año.
+ * Groups by year (Date Added, Dates Read or Last Date Read). Without a
+ * filter, a book may appear in several years; with `year`, only in that year.
  */
 export function splitByYear(data: CsvData, year?: number): SplitFile[] {
   const groups = new Map<string, Row[]>();

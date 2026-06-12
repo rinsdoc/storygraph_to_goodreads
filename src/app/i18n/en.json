@@ -1,0 +1,74 @@
+{
+  "header": {
+    "subtitle": "Convert and prepare your CSV exports without using the command line. Everything is processed in your browser: no file ever leaves your computer."
+  },
+  "toolbar": {
+    "themeToDark": "Switch to dark mode",
+    "themeToLight": "Switch to light mode",
+    "language": "Language"
+  },
+  "tabs": {
+    "convert": { "label": "Convert", "hint": "StoryGraph → Goodreads" },
+    "compare": { "label": "Compare", "hint": "Find new books" },
+    "split": { "label": "Split", "hint": "By size or status" },
+    "year": { "label": "By year", "hint": "Split by year" }
+  },
+  "common": {
+    "books": "books",
+    "booksPerFile": "Books per file:",
+    "download": "Download",
+    "downloadAll": "Download all",
+    "filesGenerated": "{{count}} files generated"
+  },
+  "convert": {
+    "title": "Convert StoryGraph to Goodreads",
+    "description": "Transform your StoryGraph export into the format Goodreads can import: shelves, dates, ratings, ISBN and reviews included.",
+    "placeholder": "Click to choose your StoryGraph export (.csv)",
+    "splitOption": "Split the result into smaller files",
+    "button": "Convert",
+    "done": "Conversion completed",
+    "notePrefix": "Then import the file at"
+  },
+  "compare": {
+    "title": "Compare two libraries",
+    "description": "Get the books that are in the new file but not in your existing library (matching by ISBN, or by title and author). Useful to avoid importing duplicates.",
+    "newPlaceholder": "New file (with potential new books)",
+    "existingPlaceholder": "Existing library (to filter out duplicates)",
+    "button": "Compare",
+    "done": "Comparison completed",
+    "result": "{{count}} books from the new file are not in your library."
+  },
+  "split": {
+    "title": "Split a large file",
+    "description": "If your CSV is too large to import at once, split it into smaller parts or separate it by read status.",
+    "placeholder": "Click to choose the CSV file to split",
+    "modeChunks": "Into fixed-size parts",
+    "modeStatus": "By read status (read, to-read, currently-reading…)",
+    "button": "Split"
+  },
+  "year": {
+    "title": "Split by year",
+    "description": "Create one file per year of your library, or export only the books of a specific year. A book counts for a year if any of its dates (added, read or last read) falls in that year.",
+    "placeholder": "Click to choose your StoryGraph export (.csv)",
+    "filterLabel": "Only a specific year (optional):",
+    "filterPlaceholder": "e.g. 2025",
+    "button": "Split by year"
+  },
+  "shelves": {
+    "read": "read",
+    "to-read": "to read",
+    "currently-reading": "currently reading"
+  },
+  "errors": {
+    "emptyFile": "The file \"{{name}}\" is empty or not a valid CSV.",
+    "readFile": "Could not read the file \"{{name}}\".",
+    "convert": "Error during conversion: {{message}}",
+    "compare": "Error during comparison: {{message}}",
+    "titleColumn": "The title column was not found in one of the files.",
+    "yearFormat": "The year must have 4 digits, for example 2025.",
+    "noBooksForYear": "There are no books associated with the year {{year}}."
+  },
+  "footer": {
+    "privacy": "Files are processed locally in your browser; nothing is uploaded to any server."
+  }
+}
