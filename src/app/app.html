@@ -1,41 +1,59 @@
+<div class="toolbar">
+  <button
+    type="button"
+    class="toolbar-btn"
+    (click)="toggleTheme()"
+    [attr.aria-label]="
+      (theme() === 'dark' ? 'toolbar.themeToLight' : 'toolbar.themeToDark') | translate
+    "
+    [title]="(theme() === 'dark' ? 'toolbar.themeToLight' : 'toolbar.themeToDark') | translate"
+  >
+    {{ theme() === 'dark' ? '☀️' : '🌙' }}
+  </button>
+  <select
+    class="toolbar-select"
+    [value]="lang()"
+    (change)="onLangChange($event)"
+    [attr.aria-label]="'toolbar.language' | translate"
+  >
+    <option value="es">ES</option>
+    <option value="en">EN</option>
+  </select>
+</div>
+
 <main class="container">
   <header class="header">
-    <h1>📚 StoryGraph → Goodreads</h1>
-    <p>
-      Convierte y prepara tus exportaciones CSV sin usar la línea de comandos.
-      Todo se procesa en tu navegador: ningún archivo sale de tu ordenador.
-    </p>
+    <h1>📚 <span class="title-grad">StoryGraph → Goodreads</span></h1>
+    <p>{{ 'header.subtitle' | translate }}</p>
   </header>
 
   <nav class="tabs">
-    @for (t of tabs; track t.id) {
-      <button type="button" class="tab" [class.active]="tab() === t.id" (click)="selectTab(t.id)">
-        <span class="tab-label">{{ t.label }}</span>
-        <span class="tab-hint">{{ t.hint }}</span>
+    @for (t of tabs; track t) {
+      <button type="button" class="tab" [class.active]="tab() === t" (click)="selectTab(t)">
+        <span class="tab-icon" aria-hidden="true">{{ tabIcons[t] }}</span>
+        <span class="tab-label">{{ 'tabs.' + t + '.label' | translate }}</span>
+        <span class="tab-hint">{{ 'tabs.' + t + '.hint' | translate }}</span>
       </button>
     }
   </nav>
 
-  @if (error()) {
-    <p class="error" role="alert">⚠️ {{ error() }}</p>
+  @if (error(); as e) {
+    <p class="error" role="alert">⚠️ {{ e.key | translate: e.params }}</p>
   }
 
   @switch (tab()) {
     @case ('convert') {
       <section class="card">
-        <h2>Convertir StoryGraph a Goodreads</h2>
-        <p class="description">
-          Transforma tu exportación de StoryGraph al formato que Goodreads puede importar:
-          estanterías, fechas, valoraciones, ISBN y reseñas incluidas.
-        </p>
+        <h2>{{ 'convert.title' | translate }}</h2>
+        <p class="description">{{ 'convert.description' | translate }}</p>
 
         <label class="file-box">
           <input type="file" accept=".csv,text/csv" (change)="onConvertFile($event)" />
           @if (convertFile(); as f) {
             <span class="file-name">📄 {{ f.name }}</span>
-            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+            <span class="file-meta">{{ f.data.rows.length }} {{ 'common.books' | translate }}</span>
           } @else {
-            <span class="file-placeholder">Haz clic para elegir tu exportación de StoryGraph (.csv)</span>
+            <span class="file-placeholder">{{ 'convert.placeholder' | translate }}</span>
           }
         </label>
 
@@ -45,11 +63,11 @@
             [checked]="convertSplit()"
             (change)="convertSplit.set(!convertSplit())"
           />
-          Dividir el resultado en archivos más pequeños
+          {{ 'convert.splitOption' | translate }}
         </label>
         @if (convertSplit()) {
           <label class="option indent">
-            Libros por archivo:
+            {{ 'common.booksPerFile' | translate }}
             <input
               type="number"
               min="1"
@@ -60,34 +78,36 @@
         }
 
         <button type="button" class="primary" [disabled]="!convertFile()" (click)="runConvert()">
-          Convertir
+          {{ 'convert.button' | translate }}
         </button>
 
         @if (convertCounts(); as counts) {
           <div class="result">
-            <h3>✅ Conversión completada</h3>
+            <h3>✅ {{ 'convert.done' | translate }}</h3>
             <ul class="summary">
               @for (entry of counts; track entry[0]) {
                 <li>
-                  <strong>{{ entry[1] }}</strong> {{ entry[0] }}
+                  <strong>{{ entry[1] }}</strong> {{ 'shelves.' + entry[0] | translate }}
                 </li>
               }
             </ul>
             <ul class="files">
               @for (f of convertOutputs(); track f.name) {
                 <li>
-                  <span>{{ f.name }} · {{ f.count }} libros</span>
-                  <button type="button" (click)="download(f)">Descargar</button>
+                  <span>{{ f.name }} · {{ f.count }} {{ 'common.books' | translate }}</span>
+                  <button type="button" (click)="download(f)">
+                    {{ 'common.download' | translate }}
+                  </button>
                 </li>
               }
             </ul>
             @if (convertOutputs().length > 1) {
               <button type="button" class="primary" (click)="downloadAll(convertOutputs())">
-                Descargar todos
+                {{ 'common.downloadAll' | translate }}
               </button>
             }
             <p class="note">
-              Luego importa el archivo en
+              {{ 'convert.notePrefix' | translate }}
               <a href="https://www.goodreads.com/review/import" target="_blank" rel="noopener">
                 goodreads.com/review/import</a
               >.
@@ -99,19 +119,16 @@
 
     @case ('compare') {
       <section class="card">
-        <h2>Comparar dos bibliotecas</h2>
-        <p class="description">
-          Obtén los libros que están en el archivo nuevo pero no en tu biblioteca existente
-          (comparando por ISBN, o por título y autor). Útil para no importar duplicados.
-        </p>
+        <h2>{{ 'compare.title' | translate }}</h2>
+        <p class="description">{{ 'compare.description' | translate }}</p>
 
         <label class="file-box">
           <input type="file" accept=".csv,text/csv" (change)="onCompareNewFile($event)" />
           @if (compareNewFile(); as f) {
             <span class="file-name">📄 {{ f.name }}</span>
-            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+            <span class="file-meta">{{ f.data.rows.length }} {{ 'common.books' | translate }}</span>
           } @else {
-            <span class="file-placeholder">Archivo nuevo (con posibles libros nuevos)</span>
+            <span class="file-placeholder">{{ 'compare.newPlaceholder' | translate }}</span>
           }
         </label>
 
@@ -119,9 +136,9 @@
           <input type="file" accept=".csv,text/csv" (change)="onCompareExistingFile($event)" />
           @if (compareExistingFile(); as f) {
             <span class="file-name">📄 {{ f.name }}</span>
-            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+            <span class="file-meta">{{ f.data.rows.length }} {{ 'common.books' | translate }}</span>
           } @else {
-            <span class="file-placeholder">Biblioteca existente (para filtrar duplicados)</span>
+            <span class="file-placeholder">{{ 'compare.existingPlaceholder' | translate }}</span>
           }
         </label>
 
@@ -131,17 +148,19 @@
           [disabled]="!compareNewFile() || !compareExistingFile()"
           (click)="runCompare()"
         >
-          Comparar
+          {{ 'compare.button' | translate }}
         </button>
 
         @if (compareOutput(); as f) {
           <div class="result">
-            <h3>✅ Comparación completada</h3>
-            <p>{{ f.count }} libros del archivo nuevo no están en tu biblioteca.</p>
+            <h3>✅ {{ 'compare.done' | translate }}</h3>
+            <p>{{ 'compare.result' | translate: { count: f.count } }}</p>
             <ul class="files">
               <li>
-                <span>{{ f.name }} · {{ f.count }} libros</span>
-                <button type="button" (click)="download(f)">Descargar</button>
+                <span>{{ f.name }} · {{ f.count }} {{ 'common.books' | translate }}</span>
+                <button type="button" (click)="download(f)">
+                  {{ 'common.download' | translate }}
+                </button>
               </li>
             </ul>
           </div>
@@ -151,19 +170,16 @@
 
     @case ('split') {
       <section class="card">
-        <h2>Dividir un archivo grande</h2>
-        <p class="description">
-          Si tu CSV es demasiado grande para importarlo de una vez, divídelo en partes más
-          pequeñas o sepáralo por estado de lectura.
-        </p>
+        <h2>{{ 'split.title' | translate }}</h2>
+        <p class="description">{{ 'split.description' | translate }}</p>
 
         <label class="file-box">
           <input type="file" accept=".csv,text/csv" (change)="onSplitFile($event)" />
           @if (splitFile(); as f) {
             <span class="file-name">📄 {{ f.name }}</span>
-            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+            <span class="file-meta">{{ f.data.rows.length }} {{ 'common.books' | translate }}</span>
           } @else {
-            <span class="file-placeholder">Haz clic para elegir el archivo CSV a dividir</span>
+            <span class="file-placeholder">{{ 'split.placeholder' | translate }}</span>
           }
         </label>
 
@@ -174,11 +190,11 @@
             [checked]="splitMode() === 'chunks'"
             (change)="splitMode.set('chunks')"
           />
-          En partes de un tamaño fijo
+          {{ 'split.modeChunks' | translate }}
         </label>
         @if (splitMode() === 'chunks') {
           <label class="option indent">
-            Libros por archivo:
+            {{ 'common.booksPerFile' | translate }}
             <input
               type="number"
               min="1"
@@ -194,27 +210,29 @@
             [checked]="splitMode() === 'status'"
             (change)="splitMode.set('status')"
           />
-          Por estado de lectura (read, to-read, currently-reading…)
+          {{ 'split.modeStatus' | translate }}
         </label>
 
         <button type="button" class="primary" [disabled]="!splitFile()" (click)="runSplit()">
-          Dividir
+          {{ 'split.button' | translate }}
         </button>
 
         @if (splitOutputs().length > 0) {
           <div class="result">
-            <h3>✅ {{ splitOutputs().length }} archivos generados</h3>
+            <h3>✅ {{ 'common.filesGenerated' | translate: { count: splitOutputs().length } }}</h3>
             <ul class="files">
               @for (f of splitOutputs(); track f.name) {
                 <li>
-                  <span>{{ f.name }} · {{ f.count }} libros</span>
-                  <button type="button" (click)="download(f)">Descargar</button>
+                  <span>{{ f.name }} · {{ f.count }} {{ 'common.books' | translate }}</span>
+                  <button type="button" (click)="download(f)">
+                    {{ 'common.download' | translate }}
+                  </button>
                 </li>
               }
             </ul>
             @if (splitOutputs().length > 1) {
               <button type="button" class="primary" (click)="downloadAll(splitOutputs())">
-                Descargar todos
+                {{ 'common.downloadAll' | translate }}
               </button>
             }
           </div>
@@ -224,53 +242,51 @@
 
     @case ('year') {
       <section class="card">
-        <h2>Dividir por año</h2>
-        <p class="description">
-          Crea un archivo por cada año de tu biblioteca, o exporta solo los libros de un año
-          concreto. Un libro cuenta para un año si alguna de sus fechas (añadido, leído o última
-          lectura) cae en ese año.
-        </p>
+        <h2>{{ 'year.title' | translate }}</h2>
+        <p class="description">{{ 'year.description' | translate }}</p>
 
         <label class="file-box">
           <input type="file" accept=".csv,text/csv" (change)="onYearFile($event)" />
           @if (yearFile(); as f) {
             <span class="file-name">📄 {{ f.name }}</span>
-            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+            <span class="file-meta">{{ f.data.rows.length }} {{ 'common.books' | translate }}</span>
           } @else {
-            <span class="file-placeholder">Haz clic para elegir tu exportación de StoryGraph (.csv)</span>
+            <span class="file-placeholder">{{ 'year.placeholder' | translate }}</span>
           }
         </label>
 
         <label class="option">
-          Solo un año concreto (opcional):
+          {{ 'year.filterLabel' | translate }}
           <input
             type="number"
             min="1900"
             max="2100"
-            placeholder="p. ej. 2025"
+            [placeholder]="'year.filterPlaceholder' | translate"
             [value]="yearFilter()"
             (input)="onYearFilterInput($event)"
           />
         </label>
 
         <button type="button" class="primary" [disabled]="!yearFile()" (click)="runYear()">
-          Dividir por año
+          {{ 'year.button' | translate }}
         </button>
 
         @if (yearOutputs().length > 0) {
           <div class="result">
-            <h3>✅ {{ yearOutputs().length }} archivos generados</h3>
+            <h3>✅ {{ 'common.filesGenerated' | translate: { count: yearOutputs().length } }}</h3>
             <ul class="files">
               @for (f of yearOutputs(); track f.name) {
                 <li>
-                  <span>{{ f.name }} · {{ f.count }} libros</span>
-                  <button type="button" (click)="download(f)">Descargar</button>
+                  <span>{{ f.name }} · {{ f.count }} {{ 'common.books' | translate }}</span>
+                  <button type="button" (click)="download(f)">
+                    {{ 'common.download' | translate }}
+                  </button>
                 </li>
               }
             </ul>
             @if (yearOutputs().length > 1) {
               <button type="button" class="primary" (click)="downloadAll(yearOutputs())">
-                Descargar todos
+                {{ 'common.downloadAll' | translate }}
               </button>
             }
           </div>
@@ -280,6 +296,6 @@
   }
 
   <footer class="footer">
-    <p>🔒 Los archivos se procesan localmente en tu navegador; no se suben a ningún servidor.</p>
+    <p>🔒 {{ 'footer.privacy' | translate }}</p>
   </footer>
 </main>

@@ -1,23 +1,34 @@
+/*
+ * Light/dark theme: each variable defines both values with light-dark().
+ * Without data-theme the system preference is followed; the app sets
+ * data-theme="light|dark" on <html> from the theme selector.
+ */
 :root {
-  --background: #f7f5f1;
-  --surface: #ffffff;
-  --border: #ddd6cc;
-  --accent: #7c5cbf;
-  --accent-soft: #f1ecfa;
-  --text: #2b2620;
-  --text-muted: #6f675c;
+  color-scheme: light dark;
+  --background: light-dark(#f6f4fa, #141118);
+  --surface: light-dark(#ffffff, #1e1a26);
+  --surface-glass: light-dark(rgba(255, 255, 255, 0.78), rgba(30, 26, 38, 0.78));
+  --border: light-dark(#e5dff0, #36304a);
+  --accent: light-dark(#6d44c4, #a98ae8);
+  --accent-strong: light-dark(#5b32b4, #bca1f1);
+  --accent-2: light-dark(#b052c8, #d27ee0);
+  --accent-soft: light-dark(#f2ecfc, #2d2542);
+  --text: light-dark(#27212f, #ede9f5);
+  --text-muted: light-dark(#6f6781, #a59db8);
+  --error-border: light-dark(#e8b4b4, #7a4040);
+  --error-background: light-dark(#fdf1f1, #3a2626);
+  --error-text: light-dark(#8a2424, #f0b8b8);
+  --success: light-dark(#2e7d4f, #7fd6a4);
+  --shadow-card: 0 12px 32px -16px light-dark(rgba(70, 35, 140, 0.28), rgba(0, 0, 0, 0.65));
+  --shadow-pop: 0 6px 18px -8px light-dark(rgba(70, 35, 140, 0.35), rgba(0, 0, 0, 0.7));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1e1b18;
-    --surface: #2a2622;
-    --border: #45403a;
-    --accent: #a98ae8;
-    --accent-soft: #38304a;
-    --text: #ece7df;
-    --text-muted: #a89f92;
-  }
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 * {
@@ -26,8 +37,13 @@
 
 body {
   margin: 0;
-  background: var(--background);
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 520px at 12% -12%, var(--accent-soft), transparent 60%),
+    radial-gradient(900px 480px at 108% 8%, color-mix(in srgb, var(--accent-2) 13%, transparent), transparent 62%),
+    var(--background);
+  background-attachment: fixed;
   color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
 }

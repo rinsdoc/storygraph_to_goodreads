@@ -1,6 +1,6 @@
 /**
- * Parser y serializador CSV (RFC 4180): campos entrecomillados,
- * comas y saltos de línea dentro de campos, y BOM inicial.
+ * CSV parser and serializer (RFC 4180): quoted fields, commas and
+ * line breaks inside fields, and leading BOM.
  */
 
 export type Row = Record<string, string>;

@@ -1,13 +1,22 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { TranslatePipe, TranslateService, TranslationObject } from '@ngx-translate/core';
 
 import { CsvData, parseCsv, toCsv } from './csv';
 import {
+  TITLE_COLUMN_NOT_FOUND,
   compareLibraries,
   splitByStatus,
   splitByYear,
   splitChunks,
   storygraphToGoodreads,
 } from './conversion';
+import en from './i18n/en.json';
+import es from './i18n/es.json';
+
+/** Available languages; each one has its file in `src/app/i18n/`. */
+const TRANSLATIONS = { es, en };
+
+type AppLanguage = keyof typeof TRANSLATIONS;
 
 interface LoadedFile {
   name: string;
@@ -20,54 +29,110 @@ interface OutputFile {
   count: number;
 }
 
+interface AppError {
+  key: string;
+  params?: Record<string, string>;
+}
+
 type Tab = 'convert' | 'compare' | 'split' | 'year';
+type Theme = 'light' | 'dark';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
+  imports: [TranslatePipe],
 })
 export class App {
-  protected readonly tabs: { id: Tab; label: string; hint: string }[] = [
-    { id: 'convert', label: 'Convertir', hint: 'StoryGraph → Goodreads' },
-    { id: 'compare', label: 'Comparar', hint: 'Encontrar libros nuevos' },
-    { id: 'split', label: 'Dividir', hint: 'Por tamaño o estado' },
-    { id: 'year', label: 'Por año', hint: 'Separar por año' },
-  ];
+  private readonly translate = inject(TranslateService);
+
+  protected readonly tabs: Tab[] = ['convert', 'compare', 'split', 'year'];
+  protected readonly tabIcons: Record<Tab, string> = {
+    convert: '🔄',
+    compare: '🔍',
+    split: '✂️',
+    year: '📅',
+  };
 
   protected readonly tab = signal<Tab>('convert');
-  protected readonly error = signal('');
+  protected readonly error = signal<AppError | null>(null);
 
-  // Convertir
+  protected readonly theme = signal<Theme>(App.initialTheme());
+  protected readonly lang = signal<AppLanguage>(App.initialLang());
+
+  // Convert
   protected readonly convertFile = signal<LoadedFile | null>(null);
   protected readonly convertSplit = signal(false);
   protected readonly convertChunkSize = signal(100);
   protected readonly convertCounts = signal<[string, number][] | null>(null);
   protected readonly convertOutputs = signal<OutputFile[]>([]);
 
-  // Comparar
+  // Compare
   protected readonly compareNewFile = signal<LoadedFile | null>(null);
   protected readonly compareExistingFile = signal<LoadedFile | null>(null);
   protected readonly compareOutput = signal<OutputFile | null>(null);
 
-  // Dividir
+  // Split
   protected readonly splitFile = signal<LoadedFile | null>(null);
   protected readonly splitMode = signal<'chunks' | 'status'>('chunks');
   protected readonly splitChunkSize = signal(50);
   protected readonly splitOutputs = signal<OutputFile[]>([]);
 
-  // Por año
+  // By year
   protected readonly yearFile = signal<LoadedFile | null>(null);
   protected readonly yearFilter = signal('');
   protected readonly yearOutputs = signal<OutputFile[]>([]);
 
+  constructor() {
+    for (const [lang, translations] of Object.entries(TRANSLATIONS)) {
+      this.translate.setTranslation(lang, translations as TranslationObject);
+    }
+
+    effect(() => {
+      const theme = this.theme();
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    });
+
+    effect(() => {
+      const lang = this.lang();
+      this.translate.use(lang);
+      document.documentElement.lang = lang;
+      localStorage.setItem('lang', lang);
+    });
+  }
+
+  private static initialTheme(): Theme {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') {
+      return stored;
+    }
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  private static initialLang(): AppLanguage {
+    const stored = localStorage.getItem('lang');
+    if (stored === 'es' || stored === 'en') {
+      return stored;
+    }
+    return navigator.language.toLowerCase().startsWith('es') ? 'es' : 'en';
+  }
+
+  protected toggleTheme(): void {
+    this.theme.set(this.theme() === 'dark' ? 'light' : 'dark');
+  }
+
+  protected onLangChange(event: Event): void {
+    this.lang.set((event.target as HTMLSelectElement).value as AppLanguage);
+  }
+
   protected selectTab(tab: Tab): void {
     this.tab.set(tab);
-    this.error.set('');
+    this.error.set(null);
   }
 
   private async readFile(event: Event): Promise<LoadedFile | null> {
-    this.error.set('');
+    this.error.set(null);
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) {
@@ -76,12 +141,12 @@ export class App {
     try {
       const data = parseCsv(await file.text());
       if (data.headers.length === 0) {
-        this.error.set(`El archivo "${file.name}" está vacío o no es un CSV válido.`);
+        this.error.set({ key: 'errors.emptyFile', params: { name: file.name } });
         return null;
       }
       return { name: file.name, data };
     } catch {
-      this.error.set(`No se pudo leer el archivo "${file.name}".`);
+      this.error.set({ key: 'errors.readFile', params: { name: file.name } });
       return null;
     } finally {
       input.value = '';
@@ -127,12 +192,20 @@ export class App {
     this.yearFilter.set((event.target as HTMLInputElement).value.trim());
   }
 
+  private setCaughtError(key: string, e: unknown): void {
+    if (e instanceof Error && e.message === TITLE_COLUMN_NOT_FOUND) {
+      this.error.set({ key: 'errors.titleColumn' });
+    } else {
+      this.error.set({ key, params: { message: e instanceof Error ? e.message : String(e) } });
+    }
+  }
+
   protected runConvert(): void {
     const file = this.convertFile();
     if (!file) {
       return;
     }
-    this.error.set('');
+    this.error.set(null);
     try {
       const { data, counts } = storygraphToGoodreads(file.data);
       this.convertCounts.set(Object.entries(counts));
@@ -145,7 +218,7 @@ export class App {
         this.convertOutputs.set([this.toOutput('goodreads_import.csv', data)]);
       }
     } catch (e) {
-      this.error.set(`Error durante la conversión: ${e instanceof Error ? e.message : e}`);
+      this.setCaughtError('errors.convert', e);
     }
   }
 
@@ -155,12 +228,12 @@ export class App {
     if (!newFile || !existingFile) {
       return;
     }
-    this.error.set('');
+    this.error.set(null);
     try {
       const result = compareLibraries(newFile.data, existingFile.data);
       this.compareOutput.set(this.toOutput('libros_nuevos.csv', result));
     } catch (e) {
-      this.error.set(`Error durante la comparación: ${e instanceof Error ? e.message : e}`);
+      this.setCaughtError('errors.compare', e);
     }
   }
 
@@ -169,7 +242,7 @@ export class App {
     if (!file) {
       return;
     }
-    this.error.set('');
+    this.error.set(null);
     const base = this.baseName(file.name);
     const parts =
       this.splitMode() === 'status'
@@ -183,16 +256,16 @@ export class App {
     if (!file) {
       return;
     }
-    this.error.set('');
+    this.error.set(null);
     const filter = this.yearFilter();
     if (filter && !/^\d{4}$/.test(filter)) {
-      this.error.set('El año debe tener 4 dígitos, por ejemplo 2025.');
+      this.error.set({ key: 'errors.yearFormat' });
       return;
     }
     const base = this.baseName(file.name);
     const parts = splitByYear(file.data, filter ? +filter : undefined);
     if (parts.length === 0) {
-      this.error.set(`No hay ningún libro asociado al año ${filter}.`);
+      this.error.set({ key: 'errors.noBooksForYear', params: { year: filter } });
     }
     this.yearOutputs.set(parts.map((p) => this.toOutput(`${base}_${p.label}.csv`, p.data)));
   }
@@ -218,7 +291,7 @@ export class App {
   protected async downloadAll(files: OutputFile[]): Promise<void> {
     for (const file of files) {
       this.download(file);
-      // Pausa breve para que el navegador no bloquee descargas consecutivas
+      // Short pause so the browser doesn't block consecutive downloads
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
   }
