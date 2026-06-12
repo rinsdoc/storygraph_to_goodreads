@@ -1,0 +1,285 @@
+<main class="container">
+  <header class="header">
+    <h1>📚 StoryGraph → Goodreads</h1>
+    <p>
+      Convierte y prepara tus exportaciones CSV sin usar la línea de comandos.
+      Todo se procesa en tu navegador: ningún archivo sale de tu ordenador.
+    </p>
+  </header>
+
+  <nav class="tabs">
+    @for (t of tabs; track t.id) {
+      <button type="button" class="tab" [class.active]="tab() === t.id" (click)="selectTab(t.id)">
+        <span class="tab-label">{{ t.label }}</span>
+        <span class="tab-hint">{{ t.hint }}</span>
+      </button>
+    }
+  </nav>
+
+  @if (error()) {
+    <p class="error" role="alert">⚠️ {{ error() }}</p>
+  }
+
+  @switch (tab()) {
+    @case ('convert') {
+      <section class="card">
+        <h2>Convertir StoryGraph a Goodreads</h2>
+        <p class="description">
+          Transforma tu exportación de StoryGraph al formato que Goodreads puede importar:
+          estanterías, fechas, valoraciones, ISBN y reseñas incluidas.
+        </p>
+
+        <label class="file-box">
+          <input type="file" accept=".csv,text/csv" (change)="onConvertFile($event)" />
+          @if (convertFile(); as f) {
+            <span class="file-name">📄 {{ f.name }}</span>
+            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+          } @else {
+            <span class="file-placeholder">Haz clic para elegir tu exportación de StoryGraph (.csv)</span>
+          }
+        </label>
+
+        <label class="option">
+          <input
+            type="checkbox"
+            [checked]="convertSplit()"
+            (change)="convertSplit.set(!convertSplit())"
+          />
+          Dividir el resultado en archivos más pequeños
+        </label>
+        @if (convertSplit()) {
+          <label class="option indent">
+            Libros por archivo:
+            <input
+              type="number"
+              min="1"
+              [value]="convertChunkSize()"
+              (input)="onNumberInput($event, 'convert')"
+            />
+          </label>
+        }
+
+        <button type="button" class="primary" [disabled]="!convertFile()" (click)="runConvert()">
+          Convertir
+        </button>
+
+        @if (convertCounts(); as counts) {
+          <div class="result">
+            <h3>✅ Conversión completada</h3>
+            <ul class="summary">
+              @for (entry of counts; track entry[0]) {
+                <li>
+                  <strong>{{ entry[1] }}</strong> {{ entry[0] }}
+                </li>
+              }
+            </ul>
+            <ul class="files">
+              @for (f of convertOutputs(); track f.name) {
+                <li>
+                  <span>{{ f.name }} · {{ f.count }} libros</span>
+                  <button type="button" (click)="download(f)">Descargar</button>
+                </li>
+              }
+            </ul>
+            @if (convertOutputs().length > 1) {
+              <button type="button" class="primary" (click)="downloadAll(convertOutputs())">
+                Descargar todos
+              </button>
+            }
+            <p class="note">
+              Luego importa el archivo en
+              <a href="https://www.goodreads.com/review/import" target="_blank" rel="noopener">
+                goodreads.com/review/import</a
+              >.
+            </p>
+          </div>
+        }
+      </section>
+    }
+
+    @case ('compare') {
+      <section class="card">
+        <h2>Comparar dos bibliotecas</h2>
+        <p class="description">
+          Obtén los libros que están en el archivo nuevo pero no en tu biblioteca existente
+          (comparando por ISBN, o por título y autor). Útil para no importar duplicados.
+        </p>
+
+        <label class="file-box">
+          <input type="file" accept=".csv,text/csv" (change)="onCompareNewFile($event)" />
+          @if (compareNewFile(); as f) {
+            <span class="file-name">📄 {{ f.name }}</span>
+            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+          } @else {
+            <span class="file-placeholder">Archivo nuevo (con posibles libros nuevos)</span>
+          }
+        </label>
+
+        <label class="file-box">
+          <input type="file" accept=".csv,text/csv" (change)="onCompareExistingFile($event)" />
+          @if (compareExistingFile(); as f) {
+            <span class="file-name">📄 {{ f.name }}</span>
+            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+          } @else {
+            <span class="file-placeholder">Biblioteca existente (para filtrar duplicados)</span>
+          }
+        </label>
+
+        <button
+          type="button"
+          class="primary"
+          [disabled]="!compareNewFile() || !compareExistingFile()"
+          (click)="runCompare()"
+        >
+          Comparar
+        </button>
+
+        @if (compareOutput(); as f) {
+          <div class="result">
+            <h3>✅ Comparación completada</h3>
+            <p>{{ f.count }} libros del archivo nuevo no están en tu biblioteca.</p>
+            <ul class="files">
+              <li>
+                <span>{{ f.name }} · {{ f.count }} libros</span>
+                <button type="button" (click)="download(f)">Descargar</button>
+              </li>
+            </ul>
+          </div>
+        }
+      </section>
+    }
+
+    @case ('split') {
+      <section class="card">
+        <h2>Dividir un archivo grande</h2>
+        <p class="description">
+          Si tu CSV es demasiado grande para importarlo de una vez, divídelo en partes más
+          pequeñas o sepáralo por estado de lectura.
+        </p>
+
+        <label class="file-box">
+          <input type="file" accept=".csv,text/csv" (change)="onSplitFile($event)" />
+          @if (splitFile(); as f) {
+            <span class="file-name">📄 {{ f.name }}</span>
+            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+          } @else {
+            <span class="file-placeholder">Haz clic para elegir el archivo CSV a dividir</span>
+          }
+        </label>
+
+        <label class="option">
+          <input
+            type="radio"
+            name="splitMode"
+            [checked]="splitMode() === 'chunks'"
+            (change)="splitMode.set('chunks')"
+          />
+          En partes de un tamaño fijo
+        </label>
+        @if (splitMode() === 'chunks') {
+          <label class="option indent">
+            Libros por archivo:
+            <input
+              type="number"
+              min="1"
+              [value]="splitChunkSize()"
+              (input)="onNumberInput($event, 'split')"
+            />
+          </label>
+        }
+        <label class="option">
+          <input
+            type="radio"
+            name="splitMode"
+            [checked]="splitMode() === 'status'"
+            (change)="splitMode.set('status')"
+          />
+          Por estado de lectura (read, to-read, currently-reading…)
+        </label>
+
+        <button type="button" class="primary" [disabled]="!splitFile()" (click)="runSplit()">
+          Dividir
+        </button>
+
+        @if (splitOutputs().length > 0) {
+          <div class="result">
+            <h3>✅ {{ splitOutputs().length }} archivos generados</h3>
+            <ul class="files">
+              @for (f of splitOutputs(); track f.name) {
+                <li>
+                  <span>{{ f.name }} · {{ f.count }} libros</span>
+                  <button type="button" (click)="download(f)">Descargar</button>
+                </li>
+              }
+            </ul>
+            @if (splitOutputs().length > 1) {
+              <button type="button" class="primary" (click)="downloadAll(splitOutputs())">
+                Descargar todos
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    @case ('year') {
+      <section class="card">
+        <h2>Dividir por año</h2>
+        <p class="description">
+          Crea un archivo por cada año de tu biblioteca, o exporta solo los libros de un año
+          concreto. Un libro cuenta para un año si alguna de sus fechas (añadido, leído o última
+          lectura) cae en ese año.
+        </p>
+
+        <label class="file-box">
+          <input type="file" accept=".csv,text/csv" (change)="onYearFile($event)" />
+          @if (yearFile(); as f) {
+            <span class="file-name">📄 {{ f.name }}</span>
+            <span class="file-meta">{{ f.data.rows.length }} libros</span>
+          } @else {
+            <span class="file-placeholder">Haz clic para elegir tu exportación de StoryGraph (.csv)</span>
+          }
+        </label>
+
+        <label class="option">
+          Solo un año concreto (opcional):
+          <input
+            type="number"
+            min="1900"
+            max="2100"
+            placeholder="p. ej. 2025"
+            [value]="yearFilter()"
+            (input)="onYearFilterInput($event)"
+          />
+        </label>
+
+        <button type="button" class="primary" [disabled]="!yearFile()" (click)="runYear()">
+          Dividir por año
+        </button>
+
+        @if (yearOutputs().length > 0) {
+          <div class="result">
+            <h3>✅ {{ yearOutputs().length }} archivos generados</h3>
+            <ul class="files">
+              @for (f of yearOutputs(); track f.name) {
+                <li>
+                  <span>{{ f.name }} · {{ f.count }} libros</span>
+                  <button type="button" (click)="download(f)">Descargar</button>
+                </li>
+              }
+            </ul>
+            @if (yearOutputs().length > 1) {
+              <button type="button" class="primary" (click)="downloadAll(yearOutputs())">
+                Descargar todos
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+
+  <footer class="footer">
+    <p>🔒 Los archivos se procesan localmente en tu navegador; no se suben a ningún servidor.</p>
+  </footer>
+</main>

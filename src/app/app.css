@@ -1,0 +1,230 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.8rem;
+}
+
+.header p {
+  margin: 0 0 1.5rem;
+  color: var(--text-muted);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tab:hover {
+  border-color: var(--accent);
+}
+
+.tab.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.tab-label {
+  font-weight: 600;
+}
+
+.tab-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.error {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0a8a8;
+  border-radius: 10px;
+  background: #fdf0f0;
+  color: #8a2424;
+}
+
+.card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.description {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted);
+}
+
+.file-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.4rem 1rem;
+  margin-bottom: 1rem;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.file-box:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.file-box input[type='file'] {
+  display: none;
+}
+
+.file-placeholder {
+  color: var(--text-muted);
+}
+
+.file-name {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.file-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.option.indent {
+  margin-left: 1.6rem;
+}
+
+.option input[type='number'] {
+  width: 6.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: inherit;
+  font: inherit;
+}
+
+button.primary {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+button.primary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+button.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.result h3 {
+  margin: 0 0 0.75rem;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.files li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.files li:last-child {
+  border-bottom: none;
+}
+
+.files button {
+  flex-shrink: 0;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.files button:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.note {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+}
+
+.note a {
+  color: var(--accent);
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "storygraph-converter",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--", "--port", "4310"],
+      "port": 4310,
+      "autoPort": false
+    }
+  ]
+}
