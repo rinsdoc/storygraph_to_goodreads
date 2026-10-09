@@ -19,7 +19,7 @@ Una aplicación web pequeña y rápida que convierte tu exportación CSV de [Sto
 
 ## ✨ Funciones
 
-| Pestaña | Qué hace |
+| Herramienta | Qué hace |
 | --- | --- |
 | 🔄 **Convertir** | Transforma una exportación de StoryGraph al formato de importación de Goodreads: estanterías, fechas, valoraciones, ISBN y reseñas incluidas. Opcionalmente divide el resultado en archivos más pequeños. |
 | 🔍 **Comparar** | Encuentra los libros de un archivo nuevo que *no* están en tu biblioteca existente (comparando por ISBN, o por título + autor). Ideal para evitar importar duplicados. |
@@ -48,10 +48,10 @@ Abre <http://localhost:4200> y listo.
 ## 📖 Cómo migrar tu biblioteca
 
 1. **Exporta desde StoryGraph** — ve a [Manage Data](https://app.thestorygraph.com/user-export) en tu cuenta de StoryGraph y descarga la exportación CSV.
-2. **Convierte** — abre la app, elige la pestaña **Convertir**, carga el CSV y pulsa *Convertir*.
+2. **Convierte** — abre la app, elige **Convertir** en la portada, carga el CSV, decide si quieres uno o varios archivos y pulsa *Convertir*.
 3. **Descarga** — obtén el `goodreads_import.csv` generado (o varios trozos más pequeños si activaste la división — Goodreads digiere mejor los archivos pequeños).
 4. **Importa en Goodreads** — sube el archivo en [goodreads.com/review/import](https://www.goodreads.com/review/import).
-5. *(Opcional)* En migraciones posteriores, usa la pestaña **Comparar** con tu exportación actual de Goodreads para importar solo los libros nuevos.
+5. *(Opcional)* En migraciones posteriores, usa la herramienta **Comparar** con tu exportación actual de Goodreads para importar solo los libros nuevos.
 
 ## 🔄 Qué se convierte
 
@@ -85,7 +85,7 @@ La interfaz está traducida con [`@ngx-translate/core`](https://github.com/ngx-t
 src/
 ├── app/
 │   ├── app.ts            # Componente raíz: signals, estado de tema e idioma
-│   ├── app.html          # Interfaz con pestañas (solo claves de traducción)
+│   ├── app.html          # Portada y flujo por pasos (solo claves de traducción)
 │   ├── app.css           # Estilos del componente
 │   ├── app.config.ts     # Providers de la aplicación (ngx-translate)
 │   ├── conversion.ts     # Lógica de conversión, comparación y división

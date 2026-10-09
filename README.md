@@ -19,7 +19,7 @@ A small, fast web app that converts your [StoryGraph](https://thestorygraph.com)
 
 ## ✨ Features
 
-| Tab | What it does |
+| Tool | What it does |
 | --- | --- |
 | 🔄 **Convert** | Transforms a StoryGraph export into the Goodreads import format: shelves, dates, ratings, ISBN and reviews included. Optionally splits the result into smaller files. |
 | 🔍 **Compare** | Finds the books in a new file that are *not* in your existing library (matched by ISBN, or by title + author). Great for avoiding duplicate imports. |
@@ -48,10 +48,10 @@ Open <http://localhost:4200> and you're ready to go.
 ## 📖 How to migrate your library
 
 1. **Export from StoryGraph** — go to [Manage Data](https://app.thestorygraph.com/user-export) in your StoryGraph account and download the CSV export.
-2. **Convert** — open the app, pick the **Convert** tab, load the CSV and click *Convert*.
+2. **Convert** — open the app, choose **Convert** from the home screen, load the CSV, pick one file or several and click *Convert*.
 3. **Download** — grab the generated `goodreads_import.csv` (or several smaller chunks if you enabled splitting — Goodreads handles small files more reliably).
 4. **Import into Goodreads** — upload the file at [goodreads.com/review/import](https://www.goodreads.com/review/import).
-5. *(Optional)* On later migrations, use the **Compare** tab with your current Goodreads export to import only the new books.
+5. *(Optional)* On later migrations, use the **Compare** tool with your current Goodreads export to import only the new books.
 
 ## 🔄 What gets converted
 
@@ -85,7 +85,7 @@ The UI is translated with [`@ngx-translate/core`](https://github.com/ngx-transla
 src/
 ├── app/
 │   ├── app.ts            # Root component: signals, theme & language state
-│   ├── app.html          # Tabbed UI (translation keys only, no hardcoded text)
+│   ├── app.html          # Home index and step-by-step flow (translation keys only)
 │   ├── app.css           # Component styles
 │   ├── app.config.ts     # Application providers (ngx-translate)
 │   ├── conversion.ts     # Conversion, comparison and splitting logic

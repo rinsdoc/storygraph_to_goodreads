@@ -68,6 +68,10 @@
                     <path pathLength="1" d="M2 7 C 50 3, 110 9, 198 4" />
                   </svg>
                 </button>
+              } @else if (i > step() && i <= reachableStep()) {
+                <button type="button" class="step-ahead" (click)="goToStep(i)">
+                  {{ t + '.steps.' + i + '.short' | translate }}
+                </button>
               } @else {
                 <span class="marker" [class.on]="i === step()">{{
                   t + '.steps.' + i + '.short' | translate
@@ -83,7 +87,9 @@
         @for (key of [t + '-' + step()]; track key) {
           <section class="step" [class.with-note]="step() < 2">
             @if (step() < 2) {
-              <h1 class="step-title">{{ t + '.steps.' + step() + '.title' | translate }}</h1>
+              <h1 class="step-title" tabindex="-1">
+                {{ t + '.steps.' + step() + '.title' | translate }}
+              </h1>
               <aside class="margin-note">
                 <svg class="arrow" viewBox="0 0 120 60" aria-hidden="true">
                   <path pathLength="1" d="M116 8 C 90 30, 50 44, 8 40 M18 32 L 7 40 L 19 47" />
@@ -97,29 +103,48 @@
 
             <div class="step-main">
               @if (step() === 2) {
-                <p class="figure">
-                  <span class="marker underline">{{ resultCount() }}</span>
-                </p>
-                @switch (t) {
-                  @case ('convert') {
-                    <h1>{{ 'convert.steps.2.title' | translate }}</h1>
-                    <p class="lead breakdown">
-                      @for (entry of convertCounts() ?? []; track entry[0]; let last = $last) {
-                        <span>{{ entry[1] }} {{ 'shelves.' + entry[0] | translate }}</span>
-                        @if (!last) {
-                          <span class="sep">·</span>
+                <!-- Total and main action, kept in view (and compacted) while the list scrolls -->
+                <div class="result-head">
+                  <div class="result-row">
+                    <div class="result-title">
+                      <p class="figure">
+                        <span class="marker underline">{{ resultCount() }}</span>
+                      </p>
+                      @switch (t) {
+                        @case ('convert') {
+                          <h1 tabindex="-1">{{ 'convert.steps.2.title' | translate }}</h1>
+                          <p class="lead breakdown">
+                            @for (
+                              entry of convertCounts() ?? [];
+                              track entry[0];
+                              let last = $last
+                            ) {
+                              <span>{{ entry[1] }} {{ 'shelves.' + entry[0] | translate }}</span>
+                              @if (!last) {
+                                <span class="sep">·</span>
+                              }
+                            }
+                          </p>
+                        }
+                        @case ('compare') {
+                          <h1 tabindex="-1">{{ 'compare.steps.2.title' | translate }}</h1>
+                          <p class="lead">{{ 'compare.steps.2.text' | translate }}</p>
+                        }
+                        @default {
+                          <h1 tabindex="-1">{{ 'common.filesGenerated' | translate }}</h1>
                         }
                       }
-                    </p>
-                  }
-                  @case ('compare') {
-                    <h1>{{ 'compare.steps.2.title' | translate }}</h1>
-                    <p class="lead">{{ 'compare.steps.2.text' | translate }}</p>
-                  }
-                  @default {
-                    <h1>{{ 'common.filesGenerated' | translate }}</h1>
-                  }
-                }
+                    </div>
+                    @if (outputs().length > 0) {
+                      <button type="button" class="primary" (click)="downloadAll(outputs())">
+                        {{
+                          (outputs().length > 1 ? 'common.downloadAll' : 'common.download')
+                            | translate
+                        }}
+                      </button>
+                    }
+                  </div>
+                </div>
               }
 
               @if (pickerSlot(); as slot) {
@@ -140,31 +165,20 @@
 
               @switch (key) {
                 @case ('convert-1') {
-                  <div
-                    class="choices"
-                    role="radiogroup"
-                    [attr.aria-label]="'convert.steps.1.title' | translate"
-                  >
+                  <fieldset class="choices" (change)="nextPenCircle($event)">
+                    <legend class="visually-hidden">
+                      {{ 'convert.steps.1.title' | translate }}
+                    </legend>
                     <label class="choice">
                       <input
                         type="radio"
                         name="convertMode"
                         [checked]="!convertSplit()"
-                        (change)="convertSplit.set(false)"
+                        (change)="convertSplit.set(false); clearResult('convert')"
                       />
                       <span class="choice-text"
                         >{{ 'convert.single' | translate }}
-                        <svg
-                          class="circle"
-                          viewBox="0 0 320 70"
-                          preserveAspectRatio="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            pathLength="1"
-                            d="M40 10 C 120 0, 270 2, 308 22 C 330 36, 296 62, 200 66 C 110 70, 14 62, 8 40 C 2 20, 50 6, 120 5"
-                          />
-                        </svg>
+                        <ng-container *ngTemplateOutlet="penCircle" />
                       </span>
                     </label>
                     <label class="choice">
@@ -172,21 +186,11 @@
                         type="radio"
                         name="convertMode"
                         [checked]="convertSplit()"
-                        (change)="convertSplit.set(true)"
+                        (change)="convertSplit.set(true); clearResult('convert')"
                       />
                       <span class="choice-text"
                         >{{ 'convert.multiple' | translate }}
-                        <svg
-                          class="circle"
-                          viewBox="0 0 320 70"
-                          preserveAspectRatio="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            pathLength="1"
-                            d="M40 10 C 120 0, 270 2, 308 22 C 330 36, 296 62, 200 66 C 110 70, 14 62, 8 40 C 2 20, 50 6, 120 5"
-                          />
-                        </svg>
+                        <ng-container *ngTemplateOutlet="penCircle" />
                       </span>
                     </label>
                     @if (convertSplit()) {
@@ -200,7 +204,7 @@
                         />
                       </label>
                     }
-                  </div>
+                  </fieldset>
                   <button type="button" class="primary" (click)="runConvert()">
                     {{ 'convert.button' | translate }}
                   </button>
@@ -213,31 +217,20 @@
                   }
                 }
                 @case ('split-1') {
-                  <div
-                    class="choices"
-                    role="radiogroup"
-                    [attr.aria-label]="'split.steps.1.title' | translate"
-                  >
+                  <fieldset class="choices" (change)="nextPenCircle($event)">
+                    <legend class="visually-hidden">
+                      {{ 'split.steps.1.title' | translate }}
+                    </legend>
                     <label class="choice">
                       <input
                         type="radio"
                         name="splitMode"
                         [checked]="splitMode() === 'chunks'"
-                        (change)="splitMode.set('chunks')"
+                        (change)="splitMode.set('chunks'); clearResult('split')"
                       />
                       <span class="choice-text"
                         >{{ 'split.modeChunks' | translate }}
-                        <svg
-                          class="circle"
-                          viewBox="0 0 320 70"
-                          preserveAspectRatio="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            pathLength="1"
-                            d="M40 10 C 120 0, 270 2, 308 22 C 330 36, 296 62, 200 66 C 110 70, 14 62, 8 40 C 2 20, 50 6, 120 5"
-                          />
-                        </svg>
+                        <ng-container *ngTemplateOutlet="penCircle" />
                       </span>
                     </label>
                     @if (splitMode() === 'chunks') {
@@ -256,24 +249,14 @@
                         type="radio"
                         name="splitMode"
                         [checked]="splitMode() === 'status'"
-                        (change)="splitMode.set('status')"
+                        (change)="splitMode.set('status'); clearResult('split')"
                       />
                       <span class="choice-text"
                         >{{ 'split.modeStatus' | translate }}
-                        <svg
-                          class="circle"
-                          viewBox="0 0 320 70"
-                          preserveAspectRatio="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            pathLength="1"
-                            d="M40 10 C 120 0, 270 2, 308 22 C 330 36, 296 62, 200 66 C 110 70, 14 62, 8 40 C 2 20, 50 6, 120 5"
-                          />
-                        </svg>
+                        <ng-container *ngTemplateOutlet="penCircle" />
                       </span>
                     </label>
-                  </div>
+                  </fieldset>
                   <button type="button" class="primary" (click)="runSplit()">
                     {{ 'split.button' | translate }}
                   </button>
@@ -315,11 +298,6 @@
                     </li>
                   }
                 </ul>
-                @if (outputs().length > 1) {
-                  <button type="button" class="primary" (click)="downloadAll(outputs())">
-                    {{ 'common.downloadAll' | translate }}
-                  </button>
-                }
                 @if (t === 'convert') {
                   <p class="note">
                     {{ 'convert.notePrefix' | translate }}
@@ -344,7 +322,7 @@
   } @else {
     <section class="step home">
       <div class="home-intro">
-        <h1 class="display">
+        <h1 class="display" tabindex="-1">
           {{ 'home.titleBefore' | translate }}
           <span class="marker drawn">{{ 'home.titleMark' | translate }}</span>
           {{ 'home.titleAfter' | translate }}
@@ -353,7 +331,7 @@
       </div>
       <ol class="tools">
         @for (t of tools; track t; let i = $index) {
-          <li>
+          <li [style.--i]="i">
             <button type="button" (click)="openTool(t)">
               <span class="num">0{{ i + 1 }}</span>
               <span class="name marker">{{ 'tools.' + t + '.label' | translate }}</span>
@@ -367,3 +345,9 @@
 </main>
 
 <footer class="footer">{{ 'footer.privacy' | translate }}</footer>
+
+<ng-template #penCircle>
+  <svg class="circle" viewBox="0 0 320 70" preserveAspectRatio="none" aria-hidden="true">
+    <path pathLength="1" [attr.d]="penPath()" />
+  </svg>
+</ng-template>

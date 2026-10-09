@@ -50,8 +50,8 @@
               }
             ],
             "styles": [
-              "@fontsource/young-serif/400.css",
-              "@fontsource/kalam/400.css",
+              "@fontsource/young-serif/latin-400.css",
+              "@fontsource/kalam/latin-400.css",
               "src/styles.css"
             ]
           },
