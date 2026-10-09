@@ -1,133 +1,91 @@
 <div align="center">
 
-# 📚 StoryGraph → Goodreads
+# StoryGraph → Goodreads
 
-**Migrate your book library from StoryGraph to Goodreads — right in your browser.**
+**Move your book library from StoryGraph to Goodreads, right in your browser.**
 
-[![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular&logoColor=white)](https://angular.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-2a36d4)](#-internationalization)
-[![Privacy](https://img.shields.io/badge/privacy-100%25%20local-2e7d4f)](#-privacy)
+### [Open the app](https://rinsdoc.github.io/storygraph_to_goodreads/)
 
-🌐 **English** · [Español](README.es.md)
+Free · No account · Nothing leaves your computer
+
+**English** · [Español](README.es.md)
 
 </div>
-
----
-
-A small, fast web app that converts your [StoryGraph](https://thestorygraph.com) CSV export into the format [Goodreads](https://www.goodreads.com/review/import) can import — plus tools to compare libraries, split large files, and slice your library by year. No command line, no account, no server: **every file is processed locally in your browser and never leaves your computer.**
 
 <p align="center">
   <img src="docs/screenshots/en-home.png" alt="Home screen: the four tools listed like the contents of a book, with the headline highlighted in yellow">
 </p>
 
-## 📸 Screenshots
+A small web app that turns your [StoryGraph](https://thestorygraph.com) CSV export into a file [Goodreads](https://www.goodreads.com/review/import) can import, plus tools to compare libraries, split large files and sort your library by year.
 
-One thing per screen: pick the file, choose the options, download the result. The step index on the left crosses off what is done, help sits in the margin as handwritten notes, and your choice is circled in pen.
+No account, no install, no server: **every file is processed in your browser and never leaves your computer.**
 
-| Choosing the options | The result, in dark mode |
-| --- | --- |
-| <img src="docs/screenshots/en-options.png" alt="Convert step with “Several smaller files” circled in pen and a handwritten margin note"> | <img src="docs/screenshots/en-result-dark.png" alt="Split result in dark mode: 12 files generated, a Download all button and the file list"> |
+## How to migrate your library
 
-<p align="center">
-  <img src="docs/screenshots/en-mobile.png" alt="Home screen on a phone" width="260">
-</p>
+1. **Export from StoryGraph.** In your StoryGraph account, go to [Manage Data](https://app.thestorygraph.com/user-export) and download the CSV export.
+2. **Convert it.** [Open the app](https://rinsdoc.github.io/storygraph_to_goodreads/), choose **Convert**, load the CSV, pick one file or several smaller ones, and press *Convert*.
+3. **Download the result.** You get `goodreads_import.csv`, or numbered parts if you chose several files.
+4. **Import into Goodreads** at [goodreads.com/review/import](https://www.goodreads.com/review/import).
 
-## ✨ Features
+Already migrated once? Next time, run **Compare** with your new StoryGraph export and your current Goodreads export to import only the books you don't have yet.
+
+## The four tools
 
 | Tool | What it does |
 | --- | --- |
-| 🔄 **Convert** | Transforms a StoryGraph export into the Goodreads import format: shelves, dates, ratings, ISBN and reviews included. Optionally splits the result into smaller files. |
-| 🔍 **Compare** | Finds the books in a new file that are *not* in your existing library (matched by ISBN, or by title + author). Great for avoiding duplicate imports. |
-| ✂️ **Split** | Chops a large CSV into fixed-size parts, or separates it by read status (`read`, `to-read`, `currently-reading`…). |
-| 📅 **By year** | Creates one file per year of your library, or exports only the books of a specific year. |
+| **Convert** | Turns a StoryGraph export into the Goodreads import format: shelves, dates, ratings, ISBN and reviews included. It can also split the result into smaller files. |
+| **Compare** | Keeps only the books from a new file that are *not* in your existing library, matching by ISBN, or by title and author. Works with StoryGraph and Goodreads exports alike. |
+| **Split** | Cuts a large CSV into parts of a fixed size, or into one file per reading status (`read`, `to-read`, `currently-reading`…). |
+| **By year** | Creates one file per year of your library, or only the file for the year you choose. |
 
-Plus:
+Each tool works the same way, one screen at a time: pick the file, choose the options, download the result.
 
-- ✍️ **Reads like a book** — a calm, step-by-step interface with highlighted menus, margin notes and choices circled in pen; it adapts from phones to 16:9 screens.
-- 🌗 **Light & dark mode** — follows your system preference by default, with a manual toggle that persists across visits.
-- 🌍 **Bilingual UI** — Spanish and English, auto-detected from your browser language, switchable at any time.
-- 📦 **Zero-backend** — the production build is fully static and can be hosted anywhere.
+## Screenshots
 
-## 🌐 Use it online
+<p align="center">
+  <img src="docs/screenshots/en-options.png" alt="Convert step with “Several smaller files” circled in pen and a handwritten margin note">
+  <img src="docs/screenshots/en-result-dark.png" alt="Split result in dark mode: 12 files generated, a Download all button and the file list">
+</p>
 
-No installation needed: open **[rinsdoc.github.io/storygraph_to_goodreads](https://rinsdoc.github.io/storygraph_to_goodreads/)**. It is published automatically from `main` with GitHub Pages.
-
-## 🚀 Quick start
-
-Requirements: [Node.js](https://nodejs.org) 20.19+ (or 22.12+) and npm.
-
-```sh
-git clone https://github.com/rinsdoc/storygraph_to_goodreads.git
-cd storygraph_to_goodreads
-npm install
-npm start
-```
-
-Open <http://localhost:4200> and you're ready to go.
-
-## 📖 How to migrate your library
-
-1. **Export from StoryGraph** — go to [Manage Data](https://app.thestorygraph.com/user-export) in your StoryGraph account and download the CSV export.
-2. **Convert** — open the app, choose **Convert** from the home screen, load the CSV, pick one file or several and click *Convert*.
-3. **Download** — grab the generated `goodreads_import.csv` (or several smaller chunks if you enabled splitting — Goodreads handles small files more reliably).
-4. **Import into Goodreads** — upload the file at [goodreads.com/review/import](https://www.goodreads.com/review/import).
-5. *(Optional)* On later migrations, use the **Compare** tool with your current Goodreads export to import only the new books.
-
-## 🔄 What gets converted
+## What gets converted
 
 | StoryGraph column | Goodreads column | Notes |
 | --- | --- | --- |
-| `Title` | `Title` | As-is |
-| `Authors` | `Author`, `Author l-f` | Also derives the *last-name-first* form |
-| `Read Status` | `Exclusive Shelf`, `Bookshelves` | Mapped to `read` / `currently-reading` / `to-read` |
-| `Date Added` | `Date Added` | Falls back to today if missing |
-| `Last Date Read` | `Date Read` | Only for books on the `read` shelf |
-| `Star Rating` | `My Rating` | Truncated to a whole number (Goodreads has no half stars) |
-| `ISBN/UID` | `ISBN` or `ISBN13` | Detected by digit count (10 vs 13) |
-| `Format` | `Binding` | As-is |
-| `Review` | `My Review` | As-is |
-| `Read Count` | `Read Count` | Clamped to a non-negative integer |
-| `Owned?` | `Owned Copies` | `yes/true/y/1` → `1`, anything else → `0` |
+| `Title` | `Title` | As is |
+| `Authors` | `Author`, `Author l-f` | The *last name, first names* form uses the last word as the surname |
+| `Read Status` | `Exclusive Shelf`, `Bookshelves` | `read` and `currently-reading` keep their shelf; anything else goes to `to-read` |
+| `Date Added` | `Date Added` | Today's date if missing or unreadable |
+| `Last Date Read` | `Date Read` | Only for books on the `read` shelf; today's date if missing |
+| `Star Rating` | `My Rating` | Rounded down to whole stars (`3.75` → `3`), since Goodreads ratings are whole stars |
+| `ISBN/UID` | `ISBN` or `ISBN13` | Chosen by length (10 or 13 digits); other IDs, such as ASINs, are left out |
+| `Format` | `Binding` | As is |
+| `Review` | `My Review` | As is |
+| `Read Count` | `Read Count` | Whole, non-negative number |
+| `Owned?` | `Owned Copies` | `yes`, `true`, `y` or `1` → `1`; anything else → `0` |
 
-Supported date formats: `YYYY-MM-DD`, `DD/MM/YYYY` and `Month D, YYYY` — all normalized to the `YYYY/MM/DD` format Goodreads expects.
+Dates are read as `YYYY-MM-DD`, `YYYY/MM/DD`, `DD/MM/YYYY` or `Month D, YYYY`, and written in the `YYYY/MM/DD` format Goodreads expects.
 
-## 🔒 Privacy
+## Questions
 
-This app has **no backend**. CSV files are read with the browser's `File` API, processed in memory, and downloaded back to your machine. Nothing is uploaded, tracked or stored — your reading history stays yours. Even the fonts (Young Serif and Kalam) ship with the app, so no request ever goes to a third party.
+**Are my files uploaded anywhere?**
+No. Your files are opened, converted and saved by your own browser: **they are never sent anywhere**. There is no server behind the app, no account and no tracking, and the page doesn't load anything from third parties, not even fonts. Once it has loaded, you could disconnect from the internet and it would keep working.
 
-## 🌍 Internationalization
+**Some of my read books show today's date in Goodreads.**
+StoryGraph had no read date for them, so the conversion fills in the day you convert to keep them on the `read` shelf with a date. You can edit it in Goodreads afterwards.
 
-The UI is translated with [`@ngx-translate/core`](https://github.com/ngx-translate/core) using translation keys and the `translate` pipe. Translations live in plain JSON files under `src/app/i18n/` that are bundled at build time (no HTTP loader, no runtime requests).
+**Goodreads has trouble with my large file.**
+Split it and import the parts one by one: choose *Several smaller files* in **Convert**, or use **Split** on a file you already have.
 
-## 🗂 Project structure
+**How do I avoid duplicates when I migrate again?**
+Use **Compare** with your new StoryGraph export as the new file and your Goodreads export as your current library. You get a CSV with only the missing books, ready to convert.
 
-```
-src/
-├── app/
-│   ├── app.ts            # Root component: signals, theme & language state
-│   ├── app.html          # Home index and step-by-step flow (translation keys only)
-│   ├── app.css           # Component styles
-│   ├── app.config.ts     # Application providers (ngx-translate)
-│   ├── conversion.ts     # Conversion, comparison and splitting logic
-│   ├── csv.ts            # RFC 4180 CSV parser & serializer
-│   └── i18n/             # Translation files (es.json, en.json)
-├── styles.css            # Theme variables (light-dark) and global styles
-└── index.html
-```
+**Where does a book go in By year?**
+In every year in which it was added or read, so it can appear in more than one file. Books with no dates at all go to `unknown`.
 
-The conversion logic is pure TypeScript with no Angular dependencies — it was ported from the original Python scripts (`storygraph_to_goodreads.py`, `compare_csv.py`, `split.py`, `year_splitter.py`) and is easy to unit-test or reuse.
+## About this project
 
-## 🛠 Scripts
+I'm not connected to StoryGraph or Goodreads in any way. I built this because I wanted to move my own reading history from one to the other, and their names only appear here to explain what the app does.
 
-| Command | Description |
-| --- | --- |
-| `npm start` | Dev server with hot reload at `localhost:4200` |
-| `npm run build` | Production build into `dist/storygraph-converter/` |
-| `npm run watch` | Development build in watch mode |
+---
 
-## 🧰 Tech stack
-
-- [Angular 21](https://angular.dev) — standalone components, signals, new control flow (`@if` / `@for` / `@switch`).
-- [@ngx-translate/core](https://github.com/ngx-translate/core) — the **only** runtime dependency beyond Angular itself.
-- Modern CSS — `light-dark()`, `color-mix()`, CSS custom properties. No CSS framework.
+Want to run it on your own computer or help improve it? See [DEVELOPMENT.md](DEVELOPMENT.md).
