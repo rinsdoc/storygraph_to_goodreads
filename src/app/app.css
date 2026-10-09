@@ -1,355 +1,958 @@
-/* ── Theme and language bar ──────────────────────────────────────── */
-
-.toolbar {
-  position: fixed;
-  top: 0.85rem;
-  right: 0.85rem;
+:host {
+  /* Sticky top bar height: one line of brand text plus its vertical padding */
+  --topbar-h: 4.6rem;
   display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.3rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-glass);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-pop);
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Where scroll-driven animation runs, the bar is already compact once scrolled */
+@supports (animation-timeline: scroll()) {
+  :host {
+    --topbar-h: 3.1rem;
+  }
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────── */
+
+/*
+ * Stays on top while long result lists scroll. It spans the whole window so
+ * nothing shows through at the sides; the padding keeps its content aligned
+ * with the 72rem page column.
+ */
+.topbar {
+  position: sticky;
+  top: 0;
   z-index: 10;
-}
-
-.toolbar-btn,
-.toolbar-select {
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.toolbar-btn {
-  padding: 0.3rem 0.55rem;
-  font-size: 1.05rem;
-  line-height: 1;
-}
-
-.toolbar-select {
-  padding: 0.3rem 0.4rem;
-}
-
-.toolbar-btn:hover,
-.toolbar-select:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-
-/* ── General layout ──────────────────────────────────────────────── */
-
-.container {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 3.5rem 1rem 3rem;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.header h1 {
-  margin: 0 0 0.6rem;
-  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
-  letter-spacing: -0.02em;
-}
-
-.title-grad {
-  background: linear-gradient(92deg, var(--accent-strong), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.header p {
-  max-width: 38rem;
-  margin: 0 auto;
-  color: var(--text-muted);
-}
-
-/* ── Tabs ────────────────────────────────────────────────────────── */
-
-.tabs {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
-}
-
-.tab {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.1rem;
-  padding: 0.7rem 0.95rem;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface);
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-align: left;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
-}
-
-.tab:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-pop);
-}
-
-.tab.active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px var(--accent);
-}
-
-.tab-icon {
-  font-size: 1.15rem;
-}
-
-.tab-label {
-  font-weight: 650;
-}
-
-.tab-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-/* ── Errors ──────────────────────────────────────────────────────── */
-
-.error {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--error-border);
-  border-radius: 12px;
-  background: var(--error-background);
-  color: var(--error-text);
-}
-
-/* ── Main card ───────────────────────────────────────────────────── */
-
-.card {
-  padding: 1.75rem;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-.card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.3rem;
-  letter-spacing: -0.01em;
-}
-
-.description {
-  margin: 0 0 1.4rem;
-  color: var(--text-muted);
-}
-
-/* ── File picker ─────────────────────────────────────────────────── */
-
-.file-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 1.6rem 1rem;
-  margin-bottom: 1rem;
-  border: 2px dashed var(--border);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--accent-soft) 35%, transparent);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s;
-}
-
-.file-box:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  transform: translateY(-1px);
-}
-
-.file-box input[type='file'] {
-  display: none;
-}
-
-.file-placeholder {
-  color: var(--text-muted);
-}
-
-.file-name {
-  font-weight: 600;
-  word-break: break-all;
-}
-
-.file-meta {
-  font-size: 0.85rem;
-  padding: 0.1rem 0.6rem;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-/* ── Options ─────────────────────────────────────────────────────── */
-
-.option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.option.indent {
-  margin-left: 1.6rem;
-}
-
-.option input[type='checkbox'],
-.option input[type='radio'] {
-  accent-color: var(--accent);
-}
-
-.option input[type='number'] {
-  width: 6.5rem;
-  padding: 0.4rem 0.55rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--background);
-  color: inherit;
-  font: inherit;
-  transition: border-color 0.15s;
-}
-
-.option input[type='number']:focus {
-  border-color: var(--accent);
-  outline: none;
-}
-
-/* ── Buttons ─────────────────────────────────────────────────────── */
-
-button.primary {
-  margin-top: 0.85rem;
-  padding: 0.65rem 1.7rem;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #fff;
-  font: inherit;
-  font-weight: 650;
-  cursor: pointer;
-  box-shadow: var(--shadow-pop);
-  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
-}
-
-button.primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-button.primary:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-button.primary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ── Results ─────────────────────────────────────────────────────── */
-
-.result {
-  margin-top: 1.6rem;
-  padding-top: 1.3rem;
-  border-top: 1px solid var(--border);
-}
-
-.result h3 {
-  margin: 0 0 0.85rem;
-  color: var(--success);
-}
-
-.summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0;
-}
-
-.summary li {
-  padding: 0.25rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--accent-soft);
-  font-size: 0.9rem;
-}
-
-.files {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.files li {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.55rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--accent-soft) 30%, transparent);
-  transition: border-color 0.15s;
+  width: 100%;
+  padding: 1.5rem max(1.25rem, calc((100% - 72rem) / 2 + 1.25rem));
+  background: var(--paper);
+  font-size: 0.875rem;
+  transition: background-color 0.4s ease;
 }
 
-.files li:hover {
+/* Rule under the header, drawn in pen as you read down the page */
+.topbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/*
+ * Scroll-driven, where supported: in the first few rem the header tightens and
+ * a hairline appears under it; over the whole page the pen line fills up.
+ * Elsewhere it simply stays fixed. Nothing runs when the page doesn't scroll.
+ */
+@supports (animation-timeline: scroll()) {
+  .topbar {
+    animation: topbar-compact linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 6rem;
+  }
+
+  .topbar::after {
+    animation: reading-line linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes topbar-compact {
+  to {
+    padding-block: 0.75rem;
+    box-shadow: 0 1px 0 var(--rule);
+  }
+}
+
+@keyframes reading-line {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.brand {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--serif);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.prefs,
+.langs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.langs {
+  gap: 0.5rem;
+}
+
+.pref {
+  padding: 0.125rem 0;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.pref:hover,
+.pref.current {
+  color: var(--ink);
+}
+
+.pref.current {
+  border-bottom-color: var(--ink);
+}
+
+/* ── Page ────────────────────────────────────────────────────────── */
+
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 4rem 1.25rem 3rem;
+}
+
+.step {
+  animation: enter 0.45s var(--ease) both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+h1 {
+  margin: 0 0 0.75rem;
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 4.5vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h1.display {
+  max-width: 16ch;
+  font-size: clamp(2.25rem, 7vw, 3.25rem);
+  line-height: 1.1;
+}
+
+.lead {
+  max-width: 34rem;
+  margin: 0 0 2.5rem;
+  color: var(--muted);
+}
+
+/* ── Highlighter ─────────────────────────────────────────────────── */
+
+/* A hand-drawn marker stroke behind the text, revealed from left to right */
+.marker {
+  position: relative;
+  z-index: 0;
+  white-space: nowrap;
+}
+
+.marker::before {
+  content: '';
+  position: absolute;
+  inset: 0.08em -0.3em -0.04em;
+  z-index: -1;
+  background: var(--mark);
+  --shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50' preserveAspectRatio='none'%3E%3Cpath d='M4 10 C50 4 120 8 196 6 C198 20 192 34 197 44 C130 48 60 44 3 47 C7 34 1 22 4 10 Z'/%3E%3C/svg%3E");
+  -webkit-mask: var(--shape) no-repeat 0 0 / 100% 100%;
+  mask: var(--shape) no-repeat 0 0 / 100% 100%;
+  transform: rotate(-1deg);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.4s var(--ease);
+}
+
+/* Already highlighted when it appears, like a phrase someone marked */
+.marker.drawn {
+  color: var(--mark-ink);
+  animation: ink-on-mark 0.7s var(--ease) 0.35s both;
+}
+
+.marker.drawn::before {
+  animation: draw 0.7s var(--ease) 0.35s both;
+}
+
+/* Only the bottom of the stroke: a thick underline */
+.marker.underline::before {
+  inset: 84% -0.12em -0.06em;
+  transform: rotate(-0.6deg);
+  animation: draw 0.6s var(--ease) 0.3s both;
+}
+
+@keyframes draw {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes ink-on-mark {
+  from {
+    color: var(--ink);
+  }
+}
+
+/* ── Home ────────────────────────────────────────────────────────── */
+
+.home {
+  max-width: 44rem;
+}
+
+.tools {
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+/* Rows come in one after another; --i is each row's index */
+.tools li {
+  border-bottom: 1px solid var(--rule);
+  animation: enter 0.45s var(--ease) calc(var(--i) * 0.05s) both;
+}
+
+.tools button {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.25rem 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.num {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  justify-self: start;
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  transition: color 0.3s ease;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.tools button:hover .name,
+.tools button:focus-visible .name {
+  color: var(--mark-ink);
+}
+
+.tools button:hover .name::before,
+.tools button:focus-visible .name::before {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ── Flow header and step index ───────────────────────────────────── */
+
+/* Breadcrumbs like a book's running head: Contents / Tool */
+.crumbs {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  margin-bottom: 0.875rem;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+}
+
+.crumb-home {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.crumb-home .marker {
+  transition: color 0.3s ease;
+}
+
+.crumb-home:hover .marker,
+.crumb-home:focus-visible .marker {
+  color: var(--mark-ink);
+}
+
+.crumb-home:hover .marker::before,
+.crumb-home:focus-visible .marker::before {
+  clip-path: inset(0 0 0 0);
+}
+
+.crumb-sep {
+  color: var(--faint);
+}
+
+.step-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin: 0 0 3.5rem;
+  padding: 0.875rem 0 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.step-index .marker {
+  transition: color 0.3s ease;
+}
+
+.step-index .marker.on {
+  color: var(--mark-ink);
+}
+
+.step-index .marker.on::before {
+  clip-path: inset(0 0 0 0);
+}
+
+/* A finished step, crossed out in pen; clicking it goes back there */
+.step-done {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.step-done:hover {
+  color: var(--ink);
+}
+
+/*
+ * A step already reached further on, still reachable after going back. Ink and
+ * a pen-blue underline set it apart from pending steps, which stay muted.
+ */
+.step-ahead {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.step-ahead:hover {
+  color: var(--accent);
+}
+
+.strike {
+  position: absolute;
+  left: -0.25rem;
+  top: 42%;
+  width: calc(100% + 0.5rem);
+  height: 0.6rem;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.strike path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  animation: pen 0.45s var(--ease) 0.1s forwards;
+}
+
+/* ── Step layout and margin notes ────────────────────────────────── */
+
+.step.with-note {
+  display: grid;
+  grid-template-areas: 'title' 'note' 'main';
+}
+
+.step-title {
+  grid-area: title;
+  margin-bottom: 0.5rem;
+}
+
+.step-main {
+  grid-area: main;
+}
+
+.margin-note {
+  grid-area: note;
+  position: relative;
+  margin-bottom: 2rem;
+  font-family: var(--hand);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  color: var(--accent);
+}
+
+.margin-note p {
+  margin: 0 0 0.75rem;
+  max-width: 22rem;
+  transform: rotate(-1deg);
+  animation: enter 0.5s var(--ease) 0.25s both;
+}
+
+.margin-note .quiet {
+  font-size: 1.125rem;
+  color: var(--muted);
+  transform: rotate(1deg);
+  animation-delay: 0.4s;
+}
+
+.arrow {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .step.with-note {
+    grid-template-columns: minmax(0, 1fr) 12rem;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 'title note' 'main note';
+    column-gap: 3.5rem;
+  }
+
+  .step-title {
+    margin-bottom: 2rem;
+  }
+
+  .margin-note {
+    margin: 0;
+    padding: 0.25rem 0 0 1.5rem;
+    border-left: 1px dashed var(--rule);
+  }
+
+  .margin-note p {
+    margin-bottom: 2rem;
+    transform: rotate(-2.5deg);
+  }
+
+  .margin-note .quiet {
+    transform: rotate(1.5deg);
+  }
+
+  .arrow {
+    display: block;
+    position: absolute;
+    left: -5.25rem;
+    top: 4.5rem;
+    width: 5rem;
+    height: 2.5rem;
+    overflow: visible;
+  }
+
+  .arrow path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1 2;
+    stroke-dashoffset: 1;
+    animation: pen 0.6s var(--ease) 0.5s forwards;
+  }
+}
+
+@keyframes pen {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── File picker ─────────────────────────────────────────────────── */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px dashed var(--faint);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.picker:hover,
+.picker:focus-within {
   border-color: var(--accent);
+  background: var(--field);
 }
 
-.files button {
-  flex-shrink: 0;
-  padding: 0.35rem 0.95rem;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
+.picker.filled {
+  border-style: solid;
+  border-color: var(--rule);
+}
+
+.picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.picker-name {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  word-break: break-all;
+}
+
+.picker-meta {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.picker-change {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Choices, circled in pen ─────────────────────────────────────── */
+
+.choices {
+  min-width: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.75rem;
+  margin: 1rem 0 2rem 1.5rem;
+}
+
+.choice {
+  position: relative;
+  cursor: pointer;
+}
+
+.choice input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice-text {
+  position: relative;
+  display: inline-block;
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+/* Hover hints in pen blue, so it never looks like the selected ink */
+.choice:hover input:not(:checked) + .choice-text {
+  color: var(--accent);
+}
+
+.choice input:checked + .choice-text {
+  color: var(--ink);
+}
+
+.choice input:focus-visible + .choice-text {
+  outline: 2px solid var(--accent);
+  outline-offset: 0.75rem;
+}
+
+.circle {
+  position: absolute;
+  left: -1.5rem;
+  top: -0.8rem;
+  width: calc(100% + 2.75rem);
+  height: calc(100% + 1.6rem);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.circle path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+
+.choice input:checked + .choice-text .circle path {
+  animation: pen 0.55s var(--ease) 0.15s forwards;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  max-width: 12rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.choices .field {
+  margin: -0.25rem 0 0;
+}
+
+/* Numbers are written by hand on the line */
+.field input {
+  padding: 0.125rem 0;
+  border: none;
+  border-bottom: 1px solid var(--faint);
+  border-radius: 0;
   background: transparent;
   color: var(--accent);
   font: inherit;
-  font-weight: 550;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  font-family: var(--hand);
+  font-size: 1.375rem;
+  transition: border-color 0.2s ease;
 }
 
-.files button:hover {
-  background: var(--accent);
-  color: #fff;
+.field input:focus {
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+
+.reveal {
+  animation: enter 0.3s var(--ease) both;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+
+.primary {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.75rem;
+  border: 1px solid var(--mark);
+  border-radius: 2px;
+  background: var(--mark);
+  color: var(--mark-ink);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.primary:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+
+/* ── Results ─────────────────────────────────────────────────────── */
+
+/*
+ * The result's total and its main action share a row that sticks under the top
+ * bar. Where the browser can tell it is stuck, it folds into a single line.
+ */
+.result-head {
+  position: sticky;
+  top: var(--topbar-h);
+  z-index: 5;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0;
+  background: var(--paper);
+  container-type: scroll-state;
+  transition: background-color 0.4s ease;
+}
+
+.result-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.result-title h1 {
+  margin: 0;
+}
+
+.result-title .lead {
+  margin: 0.5rem 0 0;
+}
+
+/* Half-size: the list's own links stay the main way in */
+.result-row .primary {
+  margin: 0;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.result-title,
+.result-title .figure,
+.result-title h1 {
+  transition:
+    font-size 0.3s var(--ease),
+    gap 0.3s var(--ease);
+}
+
+@container scroll-state(stuck: top) {
+  .result-row {
+    align-items: center;
+    padding-bottom: 0.5rem;
+    box-shadow: 0 1px 0 var(--rule);
+  }
+
+  .result-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .result-title .figure {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .result-title h1 {
+    font-size: 1.375rem;
+  }
+
+  .result-title .lead {
+    display: none;
+  }
+}
+
+.figure {
+  margin: 0 0 1rem;
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 12vw, 5rem);
+  line-height: 1.05;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdown .sep {
+  margin: 0 0.5rem;
+  color: var(--faint);
+}
+
+.files {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.files li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.file-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.file-count {
+  font-size: 0.875rem;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 .note {
-  margin: 1rem 0 0;
-  color: var(--text-muted);
+  margin: 2rem 0 0;
+  color: var(--muted);
 }
 
 .note a {
-  color: var(--accent);
+  color: var(--ink);
+  text-underline-offset: 4px;
+}
+
+.restart {
+  display: block;
+  margin-top: 2.5rem;
+}
+
+.error {
+  margin: 2rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--error);
+  color: var(--error);
+  animation: enter 0.3s var(--ease) both;
 }
 
 /* ── Footer ──────────────────────────────────────────────────────── */
 
 .footer {
-  margin-top: 2.25rem;
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* ── Wide screens: the step index becomes a column, as in a book's contents ── */
+
+@media (min-width: 62rem) {
+  .flow {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    column-gap: 3.5rem;
+  }
+
+  .flow-side {
+    position: sticky;
+    top: calc(var(--topbar-h) + 1.5rem);
+    align-self: start;
+    padding-top: 0.5rem;
+  }
+
+  .crumbs {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .step-index {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.125rem;
+    margin: 0;
+    padding: 0;
+    border-top: none;
+    font-size: 1rem;
+  }
+}
+
+/* ── Widescreen (16:9): fill the frame instead of hugging the top ──── */
+
+@media (min-width: 62rem) {
+  .page {
+    padding-top: clamp(3rem, 15vh, 11rem);
+  }
+
+  /* Home: headline on the left, contents on the right, centred in the screen */
+  .page.is-home {
+    display: flex;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+
+  .home {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(3rem, 6vw, 7rem);
+    width: 100%;
+    max-width: none;
+  }
+
+  h1.display {
+    max-width: none;
+    font-size: clamp(3rem, 3.4vw, 4.25rem);
+  }
+
+  .home .lead {
+    margin-bottom: 0;
+  }
+
+  .home .tools {
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 2.8vw, 3.25rem);
+  }
+
+  .choice-text {
+    font-size: 1.625rem;
+  }
+
+  .margin-note {
+    font-size: 1.375rem;
+  }
+
+  .flow {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: 4rem;
+  }
+
+  .step.with-note {
+    grid-template-columns: minmax(0, 1fr) 14rem;
+    column-gap: 4rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .page {
+    padding-top: 2.5rem;
+  }
+
+  .tools button {
+    grid-template-columns: 2rem 1fr;
+  }
+
+  .hint {
+    grid-column: 2;
+    margin-top: -0.75rem;
+  }
 }

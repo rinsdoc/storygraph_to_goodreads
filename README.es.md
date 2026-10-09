@@ -6,7 +6,7 @@
 
 [![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-6d44c4)](#-internacionalización)
+[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-2a36d4)](#-internacionalización)
 [![Privacidad](https://img.shields.io/badge/privacidad-100%25%20local-2e7d4f)](#-privacidad)
 
 🌐 [English](README.md) · **Español**
@@ -17,9 +17,25 @@
 
 Una aplicación web pequeña y rápida que convierte tu exportación CSV de [StoryGraph](https://thestorygraph.com) al formato que [Goodreads](https://www.goodreads.com/review/import) puede importar — además de herramientas para comparar bibliotecas, dividir archivos grandes y trocear tu biblioteca por años. Sin línea de comandos, sin cuentas, sin servidor: **todos los archivos se procesan localmente en tu navegador y nunca salen de tu ordenador.**
 
+<p align="center">
+  <img src="docs/screenshots/es-home.png" alt="Portada: las cuatro herramientas listadas como el índice de un libro, con el titular subrayado en amarillo">
+</p>
+
+## 📸 Capturas
+
+Una cosa por pantalla: eliges el archivo, decides las opciones y descargas el resultado. El índice de pasos de la izquierda tacha lo que ya está hecho, la ayuda va en el margen como notas a mano y tu elección queda rodeada a boli.
+
+| Eligiendo las opciones | El resultado, en modo oscuro |
+| --- | --- |
+| <img src="docs/screenshots/es-options.png" alt="Paso de Convertir con «Varios archivos más pequeños» rodeado a boli y una nota a mano en el margen"> | <img src="docs/screenshots/es-result-dark.png" alt="Resultado de Dividir en modo oscuro: 12 archivos generados, el botón Descargar todos y la lista de archivos"> |
+
+<p align="center">
+  <img src="docs/screenshots/es-mobile.png" alt="Portada en un móvil" width="260">
+</p>
+
 ## ✨ Funciones
 
-| Pestaña | Qué hace |
+| Herramienta | Qué hace |
 | --- | --- |
 | 🔄 **Convertir** | Transforma una exportación de StoryGraph al formato de importación de Goodreads: estanterías, fechas, valoraciones, ISBN y reseñas incluidas. Opcionalmente divide el resultado en archivos más pequeños. |
 | 🔍 **Comparar** | Encuentra los libros de un archivo nuevo que *no* están en tu biblioteca existente (comparando por ISBN, o por título + autor). Ideal para evitar importar duplicados. |
@@ -28,6 +44,7 @@ Una aplicación web pequeña y rápida que convierte tu exportación CSV de [Sto
 
 Además:
 
+- ✍️ **Se lee como un libro** — una interfaz tranquila, paso a paso, con menús subrayados, notas al margen y opciones rodeadas a boli; se adapta del móvil a pantallas 16:9.
 - 🌗 **Modo claro y oscuro** — sigue la preferencia del sistema por defecto, con un selector manual que se recuerda entre visitas.
 - 🌍 **Interfaz bilingüe** — español e inglés, detectado automáticamente del idioma del navegador y cambiable en cualquier momento.
 - 📦 **Sin backend** — la build de producción es totalmente estática y puede alojarse en cualquier parte.
@@ -48,10 +65,10 @@ Abre <http://localhost:4200> y listo.
 ## 📖 Cómo migrar tu biblioteca
 
 1. **Exporta desde StoryGraph** — ve a [Manage Data](https://app.thestorygraph.com/user-export) en tu cuenta de StoryGraph y descarga la exportación CSV.
-2. **Convierte** — abre la app, elige la pestaña **Convertir**, carga el CSV y pulsa *Convertir*.
+2. **Convierte** — abre la app, elige **Convertir** en la portada, carga el CSV, decide si quieres uno o varios archivos y pulsa *Convertir*.
 3. **Descarga** — obtén el `goodreads_import.csv` generado (o varios trozos más pequeños si activaste la división — Goodreads digiere mejor los archivos pequeños).
 4. **Importa en Goodreads** — sube el archivo en [goodreads.com/review/import](https://www.goodreads.com/review/import).
-5. *(Opcional)* En migraciones posteriores, usa la pestaña **Comparar** con tu exportación actual de Goodreads para importar solo los libros nuevos.
+5. *(Opcional)* En migraciones posteriores, usa la herramienta **Comparar** con tu exportación actual de Goodreads para importar solo los libros nuevos.
 
 ## 🔄 Qué se convierte
 
@@ -73,7 +90,7 @@ Formatos de fecha admitidos: `YYYY-MM-DD`, `DD/MM/YYYY` y `Month D, YYYY` — to
 
 ## 🔒 Privacidad
 
-Esta app **no tiene backend**. Los CSV se leen con la API `File` del navegador, se procesan en memoria y se descargan de vuelta a tu máquina. No se sube, rastrea ni almacena nada — tu historial de lectura sigue siendo tuyo.
+Esta app **no tiene backend**. Los CSV se leen con la API `File` del navegador, se procesan en memoria y se descargan de vuelta a tu máquina. No se sube, rastrea ni almacena nada — tu historial de lectura sigue siendo tuyo. Hasta las fuentes (Young Serif y Kalam) van incluidas en la app, así que nunca se hace una petición a terceros.
 
 ## 🌍 Internacionalización
 
@@ -85,7 +102,7 @@ La interfaz está traducida con [`@ngx-translate/core`](https://github.com/ngx-t
 src/
 ├── app/
 │   ├── app.ts            # Componente raíz: signals, estado de tema e idioma
-│   ├── app.html          # Interfaz con pestañas (solo claves de traducción)
+│   ├── app.html          # Portada y flujo por pasos (solo claves de traducción)
 │   ├── app.css           # Estilos del componente
 │   ├── app.config.ts     # Providers de la aplicación (ngx-translate)
 │   ├── conversion.ts     # Lógica de conversión, comparación y división

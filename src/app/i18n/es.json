@@ -1,56 +1,132 @@
 {
-  "header": {
-    "subtitle": "Convierte y prepara tus exportaciones CSV sin usar la línea de comandos. Todo se procesa en tu navegador: ningún archivo sale de tu ordenador."
+  "home": {
+    "titleBefore": "Lleva",
+    "titleMark": "tu biblioteca",
+    "titleAfter": "de StoryGraph a Goodreads.",
+    "subtitle": "Convierte, compara y divide tus exportaciones CSV sin salir del navegador."
   },
   "toolbar": {
+    "dark": "Oscuro",
+    "light": "Claro",
     "themeToDark": "Cambiar a modo oscuro",
     "themeToLight": "Cambiar a modo claro",
     "language": "Idioma"
   },
-  "tabs": {
-    "convert": { "label": "Convertir", "hint": "StoryGraph → Goodreads" },
-    "compare": { "label": "Comparar", "hint": "Encontrar libros nuevos" },
-    "split": { "label": "Dividir", "hint": "Por tamaño o estado" },
-    "year": { "label": "Por año", "hint": "Separar por año" }
+  "nav": {
+    "index": "Índice",
+    "crumbs": "Ruta",
+    "continue": "Continuar",
+    "restart": "Volver al inicio",
+    "steps": "Pasos",
+    "done": "hecho"
+  },
+  "tools": {
+    "convert": {
+      "label": "Convertir",
+      "hint": "De StoryGraph a Goodreads"
+    },
+    "compare": {
+      "label": "Comparar",
+      "hint": "Encontrar libros nuevos"
+    },
+    "split": {
+      "label": "Dividir",
+      "hint": "Por tamaño o por estado"
+    },
+    "year": {
+      "label": "Por año",
+      "hint": "Un archivo por año"
+    }
   },
   "common": {
     "books": "libros",
-    "booksPerFile": "Libros por archivo:",
+    "booksPerFile": "Libros por archivo",
+    "chooseFile": "Elegir archivo",
+    "changeFile": "cambiar",
     "download": "Descargar",
     "downloadAll": "Descargar todos",
-    "filesGenerated": "{{count}} archivos generados"
+    "filesGenerated": "archivos generados",
+    "privacyNote": "y todo se queda en tu ordenador"
   },
   "convert": {
-    "title": "Convertir StoryGraph a Goodreads",
-    "description": "Transforma tu exportación de StoryGraph al formato que Goodreads puede importar: estanterías, fechas, valoraciones, ISBN y reseñas incluidas.",
-    "placeholder": "Haz clic para elegir tu exportación de StoryGraph (.csv)",
-    "splitOption": "Dividir el resultado en archivos más pequeños",
+    "steps": {
+      "0": {
+        "title": "Tu exportación de StoryGraph",
+        "text": "Estanterías, fechas, valoraciones, ISBN y reseñas pasarán al formato de Goodreads.",
+        "short": "Archivo"
+      },
+      "1": {
+        "title": "¿Un archivo o varios?",
+        "text": "Si tu biblioteca es grande, puede ser más cómodo importarla por partes.",
+        "short": "Opciones"
+      },
+      "2": {
+        "title": "libros listos para Goodreads",
+        "short": "Descargar"
+      }
+    },
+    "single": "Un solo archivo",
+    "multiple": "Varios archivos más pequeños",
     "button": "Convertir",
-    "done": "Conversión completada",
-    "notePrefix": "Luego importa el archivo en"
+    "notePrefix": "Ahora impórtalo en"
   },
   "compare": {
-    "title": "Comparar dos bibliotecas",
-    "description": "Obtén los libros que están en el archivo nuevo pero no en tu biblioteca existente (comparando por ISBN, o por título y autor). Útil para no importar duplicados.",
-    "newPlaceholder": "Archivo nuevo (con posibles libros nuevos)",
-    "existingPlaceholder": "Biblioteca existente (para filtrar duplicados)",
-    "button": "Comparar",
-    "done": "Comparación completada",
-    "result": "{{count}} libros del archivo nuevo no están en tu biblioteca."
+    "steps": {
+      "0": {
+        "title": "El archivo nuevo",
+        "text": "El que puede traer libros que aún no tienes.",
+        "short": "Archivo nuevo"
+      },
+      "1": {
+        "title": "Tu biblioteca actual",
+        "text": "Se comparará por ISBN, o por título y autor, para quitar los duplicados.",
+        "short": "Tu biblioteca"
+      },
+      "2": {
+        "title": "libros nuevos",
+        "text": "Están en el archivo nuevo y no en tu biblioteca.",
+        "short": "Descargar"
+      }
+    },
+    "button": "Comparar"
   },
   "split": {
-    "title": "Dividir un archivo grande",
-    "description": "Si tu CSV es demasiado grande para importarlo de una vez, divídelo en partes más pequeñas o sepáralo por estado de lectura.",
-    "placeholder": "Haz clic para elegir el archivo CSV a dividir",
+    "steps": {
+      "0": {
+        "title": "El archivo que quieres dividir",
+        "text": "Útil cuando un CSV es demasiado grande para importarlo de una vez.",
+        "short": "Archivo"
+      },
+      "1": {
+        "title": "¿Cómo lo dividimos?",
+        "text": "En partes iguales o separando cada estado de lectura.",
+        "short": "Cómo dividir"
+      },
+      "2": {
+        "short": "Descargar"
+      }
+    },
     "modeChunks": "En partes de un tamaño fijo",
-    "modeStatus": "Por estado de lectura (read, to-read, currently-reading…)",
+    "modeStatus": "Por estado de lectura",
     "button": "Dividir"
   },
   "year": {
-    "title": "Dividir por año",
-    "description": "Crea un archivo por cada año de tu biblioteca, o exporta solo los libros de un año concreto. Un libro cuenta para un año si alguna de sus fechas (añadido, leído o última lectura) cae en ese año.",
-    "placeholder": "Haz clic para elegir tu exportación de StoryGraph (.csv)",
-    "filterLabel": "Solo un año concreto (opcional):",
+    "steps": {
+      "0": {
+        "title": "Tu exportación de StoryGraph",
+        "text": "Un libro cuenta para un año si lo añadiste o lo leíste en él.",
+        "short": "Archivo"
+      },
+      "1": {
+        "title": "¿Todos los años o solo uno?",
+        "text": "Déjalo en blanco para obtener un archivo por cada año.",
+        "short": "Años"
+      },
+      "2": {
+        "short": "Descargar"
+      }
+    },
+    "filterLabel": "Año",
     "filterPlaceholder": "p. ej. 2025",
     "button": "Dividir por año"
   },
@@ -69,6 +145,6 @@
     "noBooksForYear": "No hay ningún libro asociado al año {{year}}."
   },
   "footer": {
-    "privacy": "Los archivos se procesan localmente en tu navegador; no se suben a ningún servidor."
+    "privacy": "Todo se procesa en tu navegador. Ningún archivo sale de tu ordenador."
   }
 }

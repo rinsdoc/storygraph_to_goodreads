@@ -2,25 +2,27 @@
  * Light/dark theme: each variable defines both values with light-dark().
  * Without data-theme the system preference is followed; the app sets
  * data-theme="light|dark" on <html> from the theme selector.
+ *
+ * Palette: ultramarine ink on neutral paper, with a highlighter-yellow
+ * marker as the accent, like a book you read with a pen in hand.
  */
 :root {
   color-scheme: light dark;
-  --background: light-dark(#f6f4fa, #141118);
-  --surface: light-dark(#ffffff, #1e1a26);
-  --surface-glass: light-dark(rgba(255, 255, 255, 0.78), rgba(30, 26, 38, 0.78));
-  --border: light-dark(#e5dff0, #36304a);
-  --accent: light-dark(#6d44c4, #a98ae8);
-  --accent-strong: light-dark(#5b32b4, #bca1f1);
-  --accent-2: light-dark(#b052c8, #d27ee0);
-  --accent-soft: light-dark(#f2ecfc, #2d2542);
-  --text: light-dark(#27212f, #ede9f5);
-  --text-muted: light-dark(#6f6781, #a59db8);
-  --error-border: light-dark(#e8b4b4, #7a4040);
-  --error-background: light-dark(#fdf1f1, #3a2626);
-  --error-text: light-dark(#8a2424, #f0b8b8);
-  --success: light-dark(#2e7d4f, #7fd6a4);
-  --shadow-card: 0 12px 32px -16px light-dark(rgba(70, 35, 140, 0.28), rgba(0, 0, 0, 0.65));
-  --shadow-pop: 0 6px 18px -8px light-dark(rgba(70, 35, 140, 0.35), rgba(0, 0, 0, 0.7));
+  --paper: light-dark(#f2f2ee, #10122a);
+  --ink: light-dark(#1b1f6b, #e6e7f6);
+  --muted: light-dark(#5a5d8c, #9396bf);
+  --faint: light-dark(#8587ad, #5c6194);
+  --rule: light-dark(#d9dae6, #23274d);
+  --field: light-dark(#f8f8f5, #161937);
+  --accent: light-dark(#2a36d4, #9aa4ff);
+  --mark: #e4f75a;
+  --mark-ink: #1b1f6b;
+  --error: light-dark(#c2264b, #ff8aa5);
+
+  --serif: 'Young Serif', Georgia, serif;
+  --hand: 'Kalam', 'Segoe Print', cursive;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 :root[data-theme='light'] {
@@ -35,15 +37,57 @@
   box-sizing: border-box;
 }
 
+/* Type grows a little with wide screens (16:9 desktops), never below the user's default */
+html {
+  font-size: clamp(100%, 0.45vw + 0.6rem, 125%);
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(1100px 520px at 12% -12%, var(--accent-soft), transparent 60%),
-    radial-gradient(900px 480px at 108% 8%, color-mix(in srgb, var(--accent-2) 13%, transparent), transparent 62%),
-    var(--background);
-  background-attachment: fixed;
-  color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.55;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+::selection {
+  background: var(--mark);
+  color: var(--mark-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Headings only take focus from code, to announce a new screen */
+h1[tabindex='-1']:focus {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

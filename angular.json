@@ -50,6 +50,8 @@
               }
             ],
             "styles": [
+              "@fontsource/young-serif/latin-400.css",
+              "@fontsource/kalam/latin-400.css",
               "src/styles.css"
             ]
           },
@@ -63,7 +65,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "8kB",
+                  "maximumWarning": "12kB",
                   "maximumError": "16kB"
                 }
               ],
