@@ -49,6 +49,10 @@ Además:
 - 🌍 **Interfaz bilingüe** — español e inglés, detectado automáticamente del idioma del navegador y cambiable en cualquier momento.
 - 📦 **Sin backend** — la build de producción es totalmente estática y puede alojarse en cualquier parte.
 
+## 🌐 Úsala online
+
+Sin instalar nada: abre **[rinsdoc.github.io/storygraph_to_goodreads](https://rinsdoc.github.io/storygraph_to_goodreads/)**. Se publica automáticamente desde `main` con GitHub Pages.
+
 ## 🚀 Inicio rápido
 
 Requisitos: [Node.js](https://nodejs.org) 20.19+ (o 22.12+) y npm.
