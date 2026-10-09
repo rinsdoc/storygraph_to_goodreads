@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { TranslatePipe, TranslateService, TranslationObject } from '@ngx-translate/core';
 
 import { CsvData, parseCsv, toCsv } from './csv';
@@ -34,8 +34,12 @@ interface AppError {
   params?: Record<string, string>;
 }
 
-type Tab = 'convert' | 'compare' | 'split' | 'year';
+type Tool = 'convert' | 'compare' | 'split' | 'year';
 type Theme = 'light' | 'dark';
+type FileSlot = 'convert' | 'compareNew' | 'compareExisting' | 'split' | 'year';
+
+/** Every tool is a three-step flow: pick the file(s), set the options, get the result. */
+const STEP_COUNT = 3;
 
 @Component({
   selector: 'app-root',
@@ -46,19 +50,74 @@ type Theme = 'light' | 'dark';
 export class App {
   private readonly translate = inject(TranslateService);
 
-  protected readonly tabs: Tab[] = ['convert', 'compare', 'split', 'year'];
-  protected readonly tabIcons: Record<Tab, string> = {
-    convert: '🔄',
-    compare: '🔍',
-    split: '✂️',
-    year: '📅',
-  };
+  protected readonly tools: Tool[] = ['convert', 'compare', 'split', 'year'];
+  protected readonly stepIndexes = Array.from({ length: STEP_COUNT }, (_, i) => i);
 
-  protected readonly tab = signal<Tab>('convert');
+  /** Null while the home screen is shown. */
+  protected readonly tool = signal<Tool | null>(null);
+  protected readonly step = signal(0);
   protected readonly error = signal<AppError | null>(null);
 
   protected readonly theme = signal<Theme>(App.initialTheme());
   protected readonly lang = signal<AppLanguage>(App.initialLang());
+
+  /** File slot asked for on the current step, or null if the step has no file picker. */
+  protected readonly pickerSlot = computed<FileSlot | null>(() => {
+    const tool = this.tool();
+    if (tool === 'compare') {
+      return this.step() === 0 ? 'compareNew' : this.step() === 1 ? 'compareExisting' : null;
+    }
+    return tool && this.step() === 0 ? tool : null;
+  });
+
+  protected readonly pickedFile = computed(() => {
+    switch (this.pickerSlot()) {
+      case 'convert':
+        return this.convertFile();
+      case 'compareNew':
+        return this.compareNewFile();
+      case 'compareExisting':
+        return this.compareExistingFile();
+      case 'split':
+        return this.splitFile();
+      case 'year':
+        return this.yearFile();
+      default:
+        return null;
+    }
+  });
+
+  /** Files produced by the current tool, shown on its last step. */
+  protected readonly outputs = computed<OutputFile[]>(() => {
+    switch (this.tool()) {
+      case 'convert':
+        return this.convertOutputs();
+      case 'compare': {
+        const output = this.compareOutput();
+        return output ? [output] : [];
+      }
+      case 'split':
+        return this.splitOutputs();
+      case 'year':
+        return this.yearOutputs();
+      default:
+        return [];
+    }
+  });
+
+  /** The big number on the result step. */
+  protected readonly resultCount = computed(() => {
+    switch (this.tool()) {
+      case 'convert': {
+        const counts = this.convertCounts();
+        return counts ? this.totalCount(counts) : 0;
+      }
+      case 'compare':
+        return this.compareOutput()?.count ?? 0;
+      default:
+        return this.outputs().length;
+    }
+  });
 
   // Convert
   protected readonly convertFile = signal<LoadedFile | null>(null);
@@ -126,8 +185,19 @@ export class App {
     this.lang.set((event.target as HTMLSelectElement).value as AppLanguage);
   }
 
-  protected selectTab(tab: Tab): void {
-    this.tab.set(tab);
+  protected openTool(tool: Tool): void {
+    this.tool.set(tool);
+    this.step.set(0);
+    this.error.set(null);
+  }
+
+  protected goHome(): void {
+    this.tool.set(null);
+    this.error.set(null);
+  }
+
+  protected goToStep(step: number): void {
+    this.step.set(step);
     this.error.set(null);
   }
 
@@ -153,30 +223,56 @@ export class App {
     }
   }
 
-  protected async onConvertFile(event: Event): Promise<void> {
+  protected onFile(event: Event, slot: FileSlot): Promise<void> {
+    switch (slot) {
+      case 'convert':
+        return this.onConvertFile(event);
+      case 'compareNew':
+        return this.onCompareNewFile(event);
+      case 'compareExisting':
+        return this.onCompareExistingFile(event);
+      case 'split':
+        return this.onSplitFile(event);
+      case 'year':
+        return this.onYearFile(event);
+    }
+  }
+
+  private async onConvertFile(event: Event): Promise<void> {
     this.convertFile.set(await this.readFile(event));
     this.convertCounts.set(null);
     this.convertOutputs.set([]);
+    this.advanceIfLoaded(this.convertFile());
   }
 
-  protected async onCompareNewFile(event: Event): Promise<void> {
+  private async onCompareNewFile(event: Event): Promise<void> {
     this.compareNewFile.set(await this.readFile(event));
     this.compareOutput.set(null);
+    this.advanceIfLoaded(this.compareNewFile());
   }
 
-  protected async onCompareExistingFile(event: Event): Promise<void> {
+  private async onCompareExistingFile(event: Event): Promise<void> {
     this.compareExistingFile.set(await this.readFile(event));
     this.compareOutput.set(null);
   }
 
-  protected async onSplitFile(event: Event): Promise<void> {
+  private async onSplitFile(event: Event): Promise<void> {
     this.splitFile.set(await this.readFile(event));
     this.splitOutputs.set([]);
+    this.advanceIfLoaded(this.splitFile());
   }
 
-  protected async onYearFile(event: Event): Promise<void> {
+  private async onYearFile(event: Event): Promise<void> {
     this.yearFile.set(await this.readFile(event));
     this.yearOutputs.set([]);
+    this.advanceIfLoaded(this.yearFile());
+  }
+
+  /** Moves on to the options step as soon as the first step's file is loaded. */
+  private advanceIfLoaded(file: LoadedFile | null): void {
+    if (file) {
+      this.goToStep(1);
+    }
   }
 
   protected onNumberInput(event: Event, target: 'convert' | 'split'): void {
@@ -217,6 +313,7 @@ export class App {
       } else {
         this.convertOutputs.set([this.toOutput('goodreads_import.csv', data)]);
       }
+      this.goToStep(2);
     } catch (e) {
       this.setCaughtError('errors.convert', e);
     }
@@ -232,6 +329,7 @@ export class App {
     try {
       const result = compareLibraries(newFile.data, existingFile.data);
       this.compareOutput.set(this.toOutput('libros_nuevos.csv', result));
+      this.goToStep(2);
     } catch (e) {
       this.setCaughtError('errors.compare', e);
     }
@@ -249,6 +347,7 @@ export class App {
         ? splitByStatus(file.data)
         : splitChunks(file.data, this.splitChunkSize());
     this.splitOutputs.set(parts.map((p) => this.toOutput(`${base}_${p.label}.csv`, p.data)));
+    this.goToStep(2);
   }
 
   protected runYear(): void {
@@ -266,8 +365,14 @@ export class App {
     const parts = splitByYear(file.data, filter ? +filter : undefined);
     if (parts.length === 0) {
       this.error.set({ key: 'errors.noBooksForYear', params: { year: filter } });
+      return;
     }
     this.yearOutputs.set(parts.map((p) => this.toOutput(`${base}_${p.label}.csv`, p.data)));
+    this.goToStep(2);
+  }
+
+  protected totalCount(counts: [string, number][]): number {
+    return counts.reduce((sum, [, n]) => sum + n, 0);
   }
 
   private toOutput(name: string, data: CsvData): OutputFile {
