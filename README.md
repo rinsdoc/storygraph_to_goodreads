@@ -6,7 +6,7 @@
 
 [![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-6d44c4)](#-internationalization)
+[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-2a36d4)](#-internationalization)
 [![Privacy](https://img.shields.io/badge/privacy-100%25%20local-2e7d4f)](#-privacy)
 
 🌐 **English** · [Español](README.es.md)
@@ -16,6 +16,22 @@
 ---
 
 A small, fast web app that converts your [StoryGraph](https://thestorygraph.com) CSV export into the format [Goodreads](https://www.goodreads.com/review/import) can import — plus tools to compare libraries, split large files, and slice your library by year. No command line, no account, no server: **every file is processed locally in your browser and never leaves your computer.**
+
+<p align="center">
+  <img src="docs/screenshots/en-home.png" alt="Home screen: the four tools listed like the contents of a book, with the headline highlighted in yellow">
+</p>
+
+## 📸 Screenshots
+
+One thing per screen: pick the file, choose the options, download the result. The step index on the left crosses off what is done, help sits in the margin as handwritten notes, and your choice is circled in pen.
+
+| Choosing the options | The result, in dark mode |
+| --- | --- |
+| <img src="docs/screenshots/en-options.png" alt="Convert step with “Several smaller files” circled in pen and a handwritten margin note"> | <img src="docs/screenshots/en-result-dark.png" alt="Split result in dark mode: 12 files generated, a Download all button and the file list"> |
+
+<p align="center">
+  <img src="docs/screenshots/en-mobile.png" alt="Home screen on a phone" width="260">
+</p>
 
 ## ✨ Features
 
@@ -28,6 +44,7 @@ A small, fast web app that converts your [StoryGraph](https://thestorygraph.com)
 
 Plus:
 
+- ✍️ **Reads like a book** — a calm, step-by-step interface with highlighted menus, margin notes and choices circled in pen; it adapts from phones to 16:9 screens.
 - 🌗 **Light & dark mode** — follows your system preference by default, with a manual toggle that persists across visits.
 - 🌍 **Bilingual UI** — Spanish and English, auto-detected from your browser language, switchable at any time.
 - 📦 **Zero-backend** — the production build is fully static and can be hosted anywhere.
@@ -73,7 +90,7 @@ Supported date formats: `YYYY-MM-DD`, `DD/MM/YYYY` and `Month D, YYYY` — all n
 
 ## 🔒 Privacy
 
-This app has **no backend**. CSV files are read with the browser's `File` API, processed in memory, and downloaded back to your machine. Nothing is uploaded, tracked or stored — your reading history stays yours.
+This app has **no backend**. CSV files are read with the browser's `File` API, processed in memory, and downloaded back to your machine. Nothing is uploaded, tracked or stored — your reading history stays yours. Even the fonts (Young Serif and Kalam) ship with the app, so no request ever goes to a third party.
 
 ## 🌍 Internationalization
 

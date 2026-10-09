@@ -6,7 +6,7 @@
 
 [![Angular](https://img.shields.io/badge/Angular-21-dd0031?logo=angular&logoColor=white)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-6d44c4)](#-internacionalización)
+[![i18n](https://img.shields.io/badge/i18n-ES%20%C2%B7%20EN-2a36d4)](#-internacionalización)
 [![Privacidad](https://img.shields.io/badge/privacidad-100%25%20local-2e7d4f)](#-privacidad)
 
 🌐 [English](README.md) · **Español**
@@ -16,6 +16,22 @@
 ---
 
 Una aplicación web pequeña y rápida que convierte tu exportación CSV de [StoryGraph](https://thestorygraph.com) al formato que [Goodreads](https://www.goodreads.com/review/import) puede importar — además de herramientas para comparar bibliotecas, dividir archivos grandes y trocear tu biblioteca por años. Sin línea de comandos, sin cuentas, sin servidor: **todos los archivos se procesan localmente en tu navegador y nunca salen de tu ordenador.**
+
+<p align="center">
+  <img src="docs/screenshots/es-home.png" alt="Portada: las cuatro herramientas listadas como el índice de un libro, con el titular subrayado en amarillo">
+</p>
+
+## 📸 Capturas
+
+Una cosa por pantalla: eliges el archivo, decides las opciones y descargas el resultado. El índice de pasos de la izquierda tacha lo que ya está hecho, la ayuda va en el margen como notas a mano y tu elección queda rodeada a boli.
+
+| Eligiendo las opciones | El resultado, en modo oscuro |
+| --- | --- |
+| <img src="docs/screenshots/es-options.png" alt="Paso de Convertir con «Varios archivos más pequeños» rodeado a boli y una nota a mano en el margen"> | <img src="docs/screenshots/es-result-dark.png" alt="Resultado de Dividir en modo oscuro: 12 archivos generados, el botón Descargar todos y la lista de archivos"> |
+
+<p align="center">
+  <img src="docs/screenshots/es-mobile.png" alt="Portada en un móvil" width="260">
+</p>
 
 ## ✨ Funciones
 
@@ -28,6 +44,7 @@ Una aplicación web pequeña y rápida que convierte tu exportación CSV de [Sto
 
 Además:
 
+- ✍️ **Se lee como un libro** — una interfaz tranquila, paso a paso, con menús subrayados, notas al margen y opciones rodeadas a boli; se adapta del móvil a pantallas 16:9.
 - 🌗 **Modo claro y oscuro** — sigue la preferencia del sistema por defecto, con un selector manual que se recuerda entre visitas.
 - 🌍 **Interfaz bilingüe** — español e inglés, detectado automáticamente del idioma del navegador y cambiable en cualquier momento.
 - 📦 **Sin backend** — la build de producción es totalmente estática y puede alojarse en cualquier parte.
@@ -73,7 +90,7 @@ Formatos de fecha admitidos: `YYYY-MM-DD`, `DD/MM/YYYY` y `Month D, YYYY` — to
 
 ## 🔒 Privacidad
 
-Esta app **no tiene backend**. Los CSV se leen con la API `File` del navegador, se procesan en memoria y se descargan de vuelta a tu máquina. No se sube, rastrea ni almacena nada — tu historial de lectura sigue siendo tuyo.
+Esta app **no tiene backend**. Los CSV se leen con la API `File` del navegador, se procesan en memoria y se descargan de vuelta a tu máquina. No se sube, rastrea ni almacena nada — tu historial de lectura sigue siendo tuyo. Hasta las fuentes (Young Serif y Kalam) van incluidas en la app, así que nunca se hace una petición a terceros.
 
 ## 🌍 Internacionalización
 
